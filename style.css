@@ -1354,24 +1354,24 @@ body {
   justify-content: center;
   transform: translate(-50%, 0) scale(1);
   opacity: 0;
-  transition: transform 0.8s cubic-bezier(0.77,0,0.18,1), opacity 0.6s cubic-bezier(0.77,0,0.18,1);
+  transition: transform 0.7s cubic-bezier(0.77,0,0.18,1), opacity 0.5s cubic-bezier(0.77,0,0.18,1);
   z-index: 1;
+  /* Remove pointer-events so only scroll controls state */
   pointer-events: none;
 }
 .fancy-projects-scroll .project-card.active {
   opacity: 1;
-  pointer-events: auto;
   z-index: 10;
   transform: translate(-50%, 0) scale(1);
 }
 .fancy-projects-scroll .project-card.to-left {
-  opacity: 0.5;
+  opacity: 0;
   transform: translate(-120%, 0) scale(0.92) rotate(-6deg);
   z-index: 2;
 }
 .fancy-projects-scroll .project-card.to-right {
-  opacity: 0.5;
-  transform: translate(20%, 0) scale(0.92) rotate(6deg);
+  opacity: 0;
+  transform: translate(120%, 0) scale(0.92) rotate(6deg);
   z-index: 2;
 }
 .project-card-content {
