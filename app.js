@@ -49,6 +49,9 @@ function clearActiveNav() {
         a.classList.remove('active');
         if (a.parentElement) a.parentElement.classList.remove('active');
     });
+    // hide the knob when nothing is active
+    const menu = document.querySelector('.nav-menu');
+    if (menu) menu.style.setProperty('--knob-opacity', '0');
 }
 
 function setActiveNavById(id) {
@@ -58,6 +61,16 @@ function setActiveNavById(id) {
     if (link) {
         link.classList.add('active');
         if (link.parentElement) link.parentElement.classList.add('active');
+        // Move the knob to the active item's vertical center
+        const li = link.closest('li');
+        const menu = document.querySelector('.nav-menu');
+        if (li && menu) {
+            const menuRect = menu.getBoundingClientRect();
+            const liRect = li.getBoundingClientRect();
+            const top = (liRect.top + liRect.bottom) / 2 - menuRect.top;
+            menu.style.setProperty('--knob-top', `${top}px`);
+            menu.style.setProperty('--knob-opacity', '1');
+        }
     }
 }
 
