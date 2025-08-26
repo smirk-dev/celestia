@@ -862,14 +862,8 @@ body {
   text-shadow: 0 0 12px #b6e0fe99, 0 0 2px #fff;
 }
 
-/* Star icon for HOME */
-.nav-menu li:first-child::before {
-  content: '\2726';
-  position: absolute;
-  left: -38px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.5rem;
+
+/* Remove special HOME and active styles, unify all nav items */
   color: #b6e0fe;
   text-shadow: 0 0 8px #b6e0fe99;
   z-index: 2;
@@ -908,22 +902,25 @@ body {
 
 /* Other nav items faded */
 
-/* All nav items consistent style */
+
 .nav-menu a {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-secondary);
   opacity: 0.85;
+  letter-spacing: 0.04em;
   transition: color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard),
-    font-size 0.2s cubic-bezier(0.4,0,0.2,1), font-weight 0.2s cubic-bezier(0.4,0,0.2,1);
+    font-size 0.2s cubic-bezier(0.4,0,0.2,1), font-weight 0.2s cubic-bezier(0.4,0,0.2,1),
+    text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
 }
 
 .nav-menu a.active,
 .nav-menu a:hover {
   color: var(--color-primary);
   opacity: 1;
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
+  text-shadow: 0 2px 12px rgba(50,184,198,0.18);
 }
 
 /* Hero Section */
