@@ -1347,7 +1347,7 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
   height: clamp(420px, 72vh, 900px);
   max-height: 820px;
   overflow: hidden;
-  transform: rotate(30deg) scale(1.6); /* tilt and increase size by 60% */
+  transform: translateY(30px) rotate(30deg) scale(2.0); /* move down 30px, tilt, and increase size */
   transform-origin: center center;
   }
 
