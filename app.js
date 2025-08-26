@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAutoHideSidebar();
     initProjectVideoHandlers();
     initContactForm();
+    initFancyProjectsScroll();
 });
 
 /* ------------------------- Navigation ------------------------- */
@@ -467,6 +468,78 @@ function showProjectBackdrop(card) {
 
 function removeProjectBackdrop() {
     document.querySelectorAll('.card-backdrop').forEach(b => b.remove());
+}
+
+/* ------------------------- Fancy Projects Scroll Animation ------------------------- */
+function initFancyProjectsScroll() {
+    const container = document.querySelector('.fancy-projects-scroll');
+    if (!container) return;
+    const cards = Array.from(container.querySelectorAll('.project-card'));
+    if (cards.length !== 3) return;
+
+    // Set up initial state
+    let current = 0;
+    function updateCards() {
+        cards.forEach((card, i) => {
+            card.classList.remove('active', 'to-left', 'to-right');
+            if (i === current) card.classList.add('active');
+            else if (i < current) card.classList.add('to-left');
+            else if (i > current) card.classList.add('to-right');
+        });
+    }
+    updateCards();
+
+    // Listen for scroll events on the projects section
+    let ticking = false;
+    let lastScroll = 0;
+    const section = document.getElementById('projects');
+    if (!section) return;
+
+    function getSectionScrollProgress() {
+        const rect = section.getBoundingClientRect();
+        const winH = window.innerHeight;
+        // progress: 0 (top of section at top of viewport) to 1 (bottom at bottom)
+        const total = rect.height - winH;
+        if (total <= 0) return 0;
+        const scrolled = Math.min(Math.max(-rect.top, 0), total);
+        return scrolled / total;
+    }
+
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const progress = getSectionScrollProgress();
+                // 0-0.33: card 0, 0.33-0.66: card 1, 0.66-1: card 2
+                let idx = 0;
+                if (progress > 0.66) idx = 2;
+                else if (progress > 0.33) idx = 1;
+                else idx = 0;
+                if (idx !== current) {
+                    current = idx;
+                    updateCards();
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Optional: allow left/right arrow keys to pan between cards
+    section.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' && current < 2) {
+            current++;
+            updateCards();
+            section.scrollIntoView({ behavior: 'smooth' });
+        } else if (e.key === 'ArrowLeft' && current > 0) {
+            current--;
+            updateCards();
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+    // Make section focusable for keyboard nav
+    section.tabIndex = 0;
 }
 
 /* ------------------------- Contact form (EmailJS) ------------------------- */
