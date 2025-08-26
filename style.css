@@ -998,9 +998,14 @@ body {
 /* NOTE: I can tune the scale amount, font-weight, or transition timing if you'd like a stronger effect. */
 /* Active nav item gets the strong highlight; focus keeps a subtle indicator only */
 .nav-menu a:focus {
-  color: var(--color-primary);
+  /* Keep focus from changing the color so leaving a section returns link to its normal color. */
   outline: none;
-  text-shadow: 0 2px 8px rgba(50,184,198,0.12);
+}
+
+.nav-menu a:focus-visible {
+  /* Visible focus indicator for keyboard users only */
+  box-shadow: var(--focus-ring);
+  border-radius: 4px;
 }
 
 .nav-menu a.active {
