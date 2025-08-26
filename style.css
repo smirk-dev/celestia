@@ -1333,16 +1333,17 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
   }
 
   .hero-3d-placeholder {
-    /* stretch the video to span from left (after sidebar) to right edge */
-    position: relative;
-    margin: 0;
-    z-index: 2;
-    width: 100%;
-    grid-column: 1 / -1;
-    aspect-ratio: auto 16 / 9;
-    height: calc(70vh); /* large hero height */
-    max-height: 720px;
-    overflow: hidden;
+  /* large, centered hero square on desktop */
+  position: relative;
+  margin: 0 auto;
+  z-index: 2;
+  grid-column: 1 / -1;
+  width: clamp(420px, 52vw, 900px); /* target large visible size */
+  height: clamp(420px, 72vh, 900px);
+  max-height: 820px;
+  overflow: hidden;
+  transform: rotate(-30deg); /* tilt the hero by ~30 degrees */
+  transform-origin: center center;
   }
 
   /* place title into the middle column on desktop */
