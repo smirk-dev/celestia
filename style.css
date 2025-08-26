@@ -1257,6 +1257,115 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
+/* Projects grid and interactive project cards */
+.projects-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.project-card {
+  width: calc(100% - 200px);
+  max-width: 1000px;
+  height: 64px; /* thin rectangle by default */
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  overflow: visible;
+  transition: all 360ms var(--ease-standard);
+  position: relative;
+  padding: 12px 20px;
+  border-radius: 6px;
+}
+
+.project-card .card-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.project-card .card-title {
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1.05rem;
+  z-index: 2;
+}
+
+.project-video {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: calc(100% - 24px);
+  object-fit: cover;
+  opacity: 0;
+  transition: width 360ms var(--ease-standard), opacity 280ms var(--ease-standard);
+  pointer-events: none;
+  border-radius: 6px;
+  background: #000;
+}
+
+/* Expanded state: hover, focus-within, or programmatic .is-open */
+.project-card:hover,
+.project-card:focus-within,
+.project-card.is-open {
+  z-index: 9999;
+  background: rgba(0,0,0,0.88);
+  width: 60vw;
+  height: 60vh;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transition: all 380ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: projectExpand 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-card.is-open .project-video,
+.project-card:hover .project-video,
+.project-card:focus-within .project-video {
+  width: calc(60vw - 120px);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@keyframes projectExpand {
+  from {
+    transform: translate(-50%, -50%) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Touch / small screen behavior: expand to nearly full-screen */
+@media (max-width: 900px) {
+  .project-card { width: calc(100% - 40px); max-width: none; }
+  .project-card:hover, .project-card:focus-within, .project-card.is-open {
+    width: calc(100% - 32px);
+    height: calc(100vh - 120px);
+    left: 16px;
+    top: 60px;
+    transform: none;
+    border-radius: 8px;
+  }
+  .project-card.is-open .project-video,
+  .project-card:hover .project-video { width: calc(100% - 64px); }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .sidebar-nav {
