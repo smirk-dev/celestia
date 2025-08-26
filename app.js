@@ -237,8 +237,26 @@ function initServiceCards() {
 
         // click toggles open state (button-like)
         card.addEventListener('click', (e) => {
-            const open = card.classList.toggle('is-open');
-            if (open) loadAndPlay(); else stopAndUnload();
+            const isNowOpen = card.classList.contains('is-open');
+            // close any other open cards first
+            document.querySelectorAll('.service-card.is-open').forEach(other => {
+                if (other !== card) {
+                    other.classList.remove('is-open');
+                    const vid = other.querySelector('.service-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
+                }
+            });
+
+            if (!isNowOpen) {
+                // open this card
+                card.classList.add('is-open');
+                loadAndPlay();
+                showServiceBackdrop(card);
+            } else {
+                // already open -> close
+                card.classList.remove('is-open');
+                stopAndUnload();
+                removeServiceBackdrop();
+            }
         });
 
         // keyboard accessibility: Enter/Space to toggle
@@ -253,6 +271,39 @@ function initServiceCards() {
         card.addEventListener('mouseenter', () => card.style.boxShadow = '0 20px 40px rgba(143,163,176,0.4)');
         card.addEventListener('mouseleave', () => card.style.boxShadow = '');
     });
+}
+
+/* Backdrop handling for services overlay */
+function showServiceBackdrop(card) {
+    removeServiceBackdrop();
+    const backdrop = document.createElement('div');
+    backdrop.className = 'card-backdrop';
+    backdrop.addEventListener('click', () => {
+        // close any open service cards
+        document.querySelectorAll('.service-card.is-open').forEach(c => {
+            c.classList.remove('is-open');
+            const vid = c.querySelector('.service-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
+        });
+        removeServiceBackdrop();
+    });
+    document.body.appendChild(backdrop);
+
+    // Esc key should also close
+    const escHandler = (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.service-card.is-open').forEach(c => {
+                c.classList.remove('is-open');
+                const vid = c.querySelector('.service-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
+            });
+            removeServiceBackdrop();
+            document.removeEventListener('keydown', escHandler);
+        }
+    };
+    document.addEventListener('keydown', escHandler);
+}
+
+function removeServiceBackdrop() {
+    document.querySelectorAll('.card-backdrop').forEach(b => b.remove());
 }
 
 /* ------------------------- Parallax ------------------------- */

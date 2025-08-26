@@ -1270,7 +1270,7 @@ body {
 
 /* Open state: click toggles .is-open (JS) */
 .service-card.is-open {
-  z-index: 9999;
+  z-index: 10001;
   background: rgba(0,0,0,0.88);
   width: 60vw;
   height: 60vh;
@@ -1412,6 +1412,17 @@ body {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
+}
+
+/* Backdrop used when a card is open to capture outside clicks and dim background */
+.card-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 10000; /* sits under the open card which is 10001 */
 }
 
 /* Touch / small screen behavior: expand to nearly full-screen */
