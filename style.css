@@ -807,9 +807,9 @@ body {
   content: '';
   position: absolute;
   /* align with the marker area using the nav padding variable */
-  /* position vertical line so its center matches the knob's center */
   left: var(--nav-padding-left, 80px);
-  transform: translateX(-50%);
+  /* shift left by half the line width so the line's center matches the knob center */
+  margin-left: calc(-1.25px); /* half of width: 2.5px */
   top: 0;
   bottom: 0;
   width: 2.5px;
@@ -825,8 +825,10 @@ body {
   content: '\2726'; /* Star character */
   position: absolute;
   left: var(--nav-padding-left, 80px);
+  /* shift left by half the knob width so its center matches the line center */
+  margin-left: calc(-11px); /* half of width: 22px */
   top: var(--knob-top, 0px);
-  transform: translate(-50%, -50%);
+  transform: translateY(-50%);
   width: 22px;
   height: 22px;
   display: flex;
