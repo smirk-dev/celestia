@@ -906,6 +906,21 @@ body {
   filter: drop-shadow(0 0 8px #b6e0fe99);
 }
 
+/* show the star marker on hover as well as active */
+.nav-menu li:hover::before {
+  content: '\2726';
+  color: #b6e0fe;
+  font-size: 22px;
+  width: 18px;
+  height: 18px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18px;
+  filter: drop-shadow(0 0 8px #b6e0fe99);
+}
+
 /* No HOME-specific rule here; it will inherit .nav-menu a */
 
 @media (max-width: 900px) {
@@ -962,16 +977,29 @@ body {
   opacity: 0.85;
   letter-spacing: 0.04em;
   transition: color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard),
-    font-size 0.2s cubic-bezier(0.4,0,0.2,1), font-weight 0.2s cubic-bezier(0.4,0,0.2,1),
-    text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+    transform var(--duration-fast) var(--ease-standard), text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+  transform-origin: left center;
+  display: inline-block; /* so transform scale doesn't reflow siblings */
 }
 
+/* enlarge and bold the link when hovered, focused, or active */
+.nav-menu a:hover,
+.nav-menu a:focus,
 .nav-menu a.active {
   color: var(--color-primary);
   opacity: 1;
-  font-size: var(--font-size-xl);
+  transform: scale(1.12);
   font-weight: var(--font-weight-bold);
   text-shadow: 0 2px 12px rgba(50,184,198,0.18);
+}
+
+/* slightly smaller scale on medium/narrow screens to avoid layout issues */
+@media (max-width: 900px) {
+  .nav-menu a:hover,
+  .nav-menu a:focus,
+  .nav-menu a.active {
+    transform: scale(1.06);
+  }
 }
 
 /* Hero Section (restored to original centered layout) */
