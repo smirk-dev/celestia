@@ -941,6 +941,7 @@ body {
   }
   .nav-menu {
     padding-left: 10px;
+  --nav-padding-left: 10px;
     gap: 12px;
   }
   .nav-menu a {
