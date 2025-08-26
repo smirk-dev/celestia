@@ -83,6 +83,42 @@ function initNavObserver() {
         return rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.25;
     });
     if (currentlyVisible) updateActiveNav(currentlyVisible.id);
+    
+    // Also add a throttled scroll/resize fallback that picks the section nearest the viewport center
+    window.addEventListener('scroll', throttle(determineActiveSectionByCenter, 120));
+    window.addEventListener('resize', throttle(determineActiveSectionByCenter, 200));
+    // Run once to ensure initial state is correct
+    determineActiveSectionByCenter();
+}
+
+// Find the section nearest the viewport center and mark it active; clear active if none are near
+function determineActiveSectionByCenter() {
+    const sections = Array.from(document.querySelectorAll('section[id]'))
+        .filter(sec => document.querySelector(`.nav-menu a[href="#${sec.id}"]`));
+
+    if (!sections.length) {
+        updateActiveNav(null);
+        return;
+    }
+
+    const viewportCenter = window.innerHeight / 2;
+    let best = { id: null, distance: Infinity };
+
+    sections.forEach(sec => {
+        const rect = sec.getBoundingClientRect();
+        const secCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(secCenter - viewportCenter);
+        if (distance < best.distance) {
+            best = { id: sec.id, distance };
+        }
+    });
+
+    // Only select a section if its center is within half the viewport height (reasonable threshold)
+    if (best.id && best.distance <= (window.innerHeight * 0.5)) {
+        updateActiveNav(best.id);
+    } else {
+        updateActiveNav(null);
+    }
 }
 
 // Update active navigation state
