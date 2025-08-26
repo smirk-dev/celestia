@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallaxEffect();
     initHoverEffects();
     initAutoHideSidebar();
+    initProjectVideoHandlers();
 });
 
 /* ------------------------- Navigation ------------------------- */
@@ -266,3 +267,61 @@ function initNavigationFallback() {
 
 // Initialize fallback if needed
 initNavigationFallback();
+
+/* ------------------------- Project video lazy-load & autoplay ------------------------- */
+function initProjectVideoHandlers() {
+    const cards = Array.from(document.querySelectorAll('.project-card'));
+    if (!cards.length) return;
+
+    cards.forEach(card => {
+        const video = card.querySelector('.project-video');
+        if (!video) return;
+
+        // helper to load and play
+        const loadAndPlay = async () => {
+            if (!video.dataset.src) return;
+            if (!video.src) {
+                video.src = video.dataset.src;
+                try { video.load(); } catch (e) { /* ignore */ }
+            }
+            try { await video.play(); } catch (e) { /* autoplay blocked; ignore */ }
+        };
+
+        const stopAndUnload = () => {
+            try { video.pause(); } catch (e) {}
+            // remove src to free memory (but keep data-src for reload)
+            if (video.src) {
+                video.removeAttribute('src');
+                try { video.load(); } catch (e) {}
+            }
+        };
+
+        // pointerenter/leave for hover devices; focusin/out for keyboard accessibility
+        card.addEventListener('pointerenter', () => {
+            card.classList.add('is-open');
+            loadAndPlay();
+        });
+        card.addEventListener('pointerleave', () => {
+            card.classList.remove('is-open');
+            stopAndUnload();
+        });
+
+        card.addEventListener('focusin', () => {
+            card.classList.add('is-open');
+            loadAndPlay();
+        });
+        card.addEventListener('focusout', () => {
+            card.classList.remove('is-open');
+            stopAndUnload();
+        });
+
+        // touch-friendly: tap toggles open state
+        card.addEventListener('click', (e) => {
+            // on small screens, toggle the open state on tap
+            if (window.innerWidth <= 900) {
+                const open = card.classList.toggle('is-open');
+                if (open) loadAndPlay(); else stopAndUnload();
+            }
+        });
+    });
+}
