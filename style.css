@@ -797,16 +797,9 @@ body {
 }
 
 .sidebar-nav::before {
+  /* decorative accent behind logo intentionally hidden to avoid peeking */
   content: '';
-  position: absolute;
-  left: 70px;
-  top: 120px;
-  width: 2.5px;
-  height: 56px; /* decorative accent behind logo */
-  background: linear-gradient(180deg, #b6e0fe 0%, #222 100%);
-  border-radius: 2px;
-  z-index: 0;
-  box-shadow: 0 0 16px #b6e0fe55;
+  display: none; /* hide the small accent so no peeking piece shows next to the nav */
 }
 
 /* Vertical line matching the menu height so it only extends as far as the text */
