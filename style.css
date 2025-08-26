@@ -852,6 +852,11 @@ body {
   transition: margin-left 200ms var(--ease-standard);
 }
 
+/* left column content spacing so title clears the sidebar visually */
+.hero-content > :first-child {
+  padding-left: 24px;
+}
+
 
 .nav-menu li {
   width: 100%;
