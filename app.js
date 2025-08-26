@@ -212,9 +212,44 @@ function closeMobileMenu() { const sidebar = document.querySelector('.sidebar-na
 
 /* ------------------------- Service cards ------------------------- */
 function initServiceCards() {
-    document.querySelectorAll('.service-card').forEach((card, i) => {
+    const cards = Array.from(document.querySelectorAll('.service-card'));
+    cards.forEach((card, i) => {
         card.style.animationDelay = `${i * 0.1}s`;
-        card.addEventListener('click', () => { card.style.transform = 'scale(0.98) translateY(-5px)'; setTimeout(() => card.style.transform = '', 150); });
+        const video = card.querySelector('.service-video');
+
+        const loadAndPlay = async () => {
+            if (!video || !video.dataset.src) return;
+            if (!video.src) {
+                video.src = video.dataset.src;
+                try { video.load(); } catch (e) {}
+            }
+            try { await video.play(); } catch (e) {}
+        };
+
+        const stopAndUnload = () => {
+            if (!video) return;
+            try { video.pause(); } catch (e) {}
+            if (video.src) {
+                video.removeAttribute('src');
+                try { video.load(); } catch (e) {}
+            }
+        };
+
+        // click toggles open state (button-like)
+        card.addEventListener('click', (e) => {
+            const open = card.classList.toggle('is-open');
+            if (open) loadAndPlay(); else stopAndUnload();
+        });
+
+        // keyboard accessibility: Enter/Space to toggle
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const open = card.classList.toggle('is-open');
+                if (open) loadAndPlay(); else stopAndUnload();
+            }
+        });
+
         card.addEventListener('mouseenter', () => card.style.boxShadow = '0 20px 40px rgba(143,163,176,0.4)');
         card.addEventListener('mouseleave', () => card.style.boxShadow = '');
     });
