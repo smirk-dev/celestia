@@ -1214,10 +1214,98 @@ body {
 }
 
 .services-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-24);
-    margin-top: var(--space-32);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-24);
+  margin-top: var(--space-32);
+}
+
+/* Mirror project-card behavior but open on click (button-like) */
+.services-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.service-card {
+  width: calc(100% - 200px);
+  max-width: 1000px;
+  height: 120px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  overflow: visible;
+  transition: all 360ms var(--ease-standard);
+  position: relative;
+  padding: 16px 20px;
+  border-radius: 8px;
+}
+
+.service-card .card-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.service-card .card-title {
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1.05rem;
+  z-index: 2;
+}
+
+.service-video {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: calc(100% - 32px);
+  object-fit: cover;
+  opacity: 0;
+  transition: width 360ms var(--ease-standard), opacity 280ms var(--ease-standard);
+  pointer-events: none;
+  border-radius: 6px;
+  background: #000;
+}
+
+/* Open state triggered by click (toggle .is-open) */
+.service-card.is-open {
+  z-index: 9998;
+  background: rgba(0,0,0,0.88);
+  width: 60vw;
+  height: 60vh;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transition: all 380ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: projectExpand 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-card.is-open .service-video {
+  width: calc(60vw - 120px);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 900px) {
+  .service-card { width: calc(100% - 40px); max-width: none; height: 100px; }
+  .service-card.is-open {
+    width: calc(100% - 32px);
+    height: calc(100vh - 120px);
+    left: 16px;
+    top: 60px;
+    transform: none;
+    border-radius: 8px;
+  }
+  .service-card.is-open .service-video { width: calc(100% - 64px); }
 }
 
 .service-card {
