@@ -1006,6 +1006,15 @@ body {
     box-shadow: 0 10px 30px rgba(var(--color-teal-300-rgb), 0.2);
 }
 
+/* Video inside hero placeholder */
+.hero-video {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  display: block;
+}
+
 .placeholder-content {
     text-align: center;
     color: rgba(255, 255, 255, 0.7);
