@@ -375,39 +375,95 @@ function initProjectVideoHandlers() {
 
         const stopAndUnload = () => {
             try { video.pause(); } catch (e) {}
-            // remove src to free memory (but keep data-src for reload)
             if (video.src) {
                 video.removeAttribute('src');
                 try { video.load(); } catch (e) {}
             }
         };
 
-        // pointerenter/leave for hover devices; focusin/out for keyboard accessibility
-        card.addEventListener('pointerenter', () => {
-            card.classList.add('is-open');
-            loadAndPlay();
-        });
-        card.addEventListener('pointerleave', () => {
-            card.classList.remove('is-open');
-            stopAndUnload();
-        });
-
-        card.addEventListener('focusin', () => {
-            card.classList.add('is-open');
-            loadAndPlay();
-        });
-        card.addEventListener('focusout', () => {
-            card.classList.remove('is-open');
-            stopAndUnload();
-        });
-
-        // touch-friendly: tap toggles open state
+        // Click toggles open state (button-like) on all screen sizes
         card.addEventListener('click', (e) => {
-            // on small screens, toggle the open state on tap
-            if (window.innerWidth <= 900) {
-                const open = card.classList.toggle('is-open');
-                if (open) loadAndPlay(); else stopAndUnload();
+            const isNowOpen = card.classList.contains('is-open');
+
+            // close any other open project cards first
+            document.querySelectorAll('.project-card.is-open').forEach(other => {
+                if (other !== card) {
+                    other.classList.remove('is-open');
+                    const vid = other.querySelector('.project-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
+                }
+            });
+
+            if (!isNowOpen) {
+                // open this card
+                card.classList.add('is-open');
+                loadAndPlay();
+                showProjectBackdrop(card);
+            } else {
+                // close
+                card.classList.remove('is-open');
+                stopAndUnload();
+                removeProjectBackdrop();
             }
         });
+
+        // keyboard accessibility: Enter/Space to toggle
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const isNowOpen = card.classList.contains('is-open');
+                if (!isNowOpen) {
+                    // close others
+                    document.querySelectorAll('.project-card.is-open').forEach(other => {
+                        if (other !== card) {
+                            other.classList.remove('is-open');
+                            const vid = other.querySelector('.project-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
+                        }
+                    });
+                    card.classList.add('is-open');
+                    loadAndPlay();
+                    showProjectBackdrop(card);
+                } else {
+                    card.classList.remove('is-open');
+                    stopAndUnload();
+                    removeProjectBackdrop();
+                }
+            }
+        });
+
+        // subtle hover shadow for affordance
+        card.addEventListener('mouseenter', () => card.style.boxShadow = '0 20px 40px rgba(143,163,176,0.18)');
+        card.addEventListener('mouseleave', () => card.style.boxShadow = '');
     });
+}
+
+/* Backdrop handling for project overlays (mirrors service backdrop behavior) */
+function showProjectBackdrop(card) {
+    removeProjectBackdrop();
+    const backdrop = document.createElement('div');
+    backdrop.className = 'card-backdrop';
+    backdrop.addEventListener('click', () => {
+        // close any open project cards
+        document.querySelectorAll('.project-card.is-open').forEach(c => {
+            c.classList.remove('is-open');
+            const vid = c.querySelector('.project-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
+        });
+        removeProjectBackdrop();
+    });
+    document.body.appendChild(backdrop);
+
+    const escHandler = (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.project-card.is-open').forEach(c => {
+                c.classList.remove('is-open');
+                const vid = c.querySelector('.project-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
+            });
+            removeProjectBackdrop();
+            document.removeEventListener('keydown', escHandler);
+        }
+    };
+    document.addEventListener('keydown', escHandler);
+}
+
+function removeProjectBackdrop() {
+    document.querySelectorAll('.card-backdrop').forEach(b => b.remove());
 }

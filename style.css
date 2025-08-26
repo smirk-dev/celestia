@@ -1414,64 +1414,79 @@ body {
   }
 }
 
-/* Semicircular arrangement for project cards on wider screens
-   Keeps cards as thin rectangles by default but positions them along
-   a gentle arc. On small screens the existing stacked layout remains. */
+/* Concentric semicircles + radial buttons for projects (desktop-friendly) */
 @media (min-width: 900px) {
   .projects-grid {
-    /* make room for the semicircle and keep container centered */
     position: relative;
-    height: 380px;
+    height: 420px; /* gives room for the arcs */
     max-width: 1100px;
     margin: 0 auto;
     display: block;
-    align-items: unset;
-    gap: 0;
   }
 
-  .projects-grid .project-card {
-    /* switch to absolute placement so expanded (fixed) state still works */
+  /* Decorative semicircles (outer + inner) centered horizontally */
+  .projects-grid::before,
+  .projects-grid::after {
+    content: '';
     position: absolute;
-    width: 420px; /* long thin rectangle */
-    height: 64px;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    transition: transform 360ms var(--ease-standard), left 360ms var(--ease-standard), top 360ms var(--ease-standard), box-shadow 220ms ease;
+    transform: translateX(-50%);
+    bottom: 12px; /* baseline for the arc */
+    pointer-events: none;
+    border-radius: 9999px 9999px 0 0;
+    background: transparent;
+  }
+  /* outer arc */
+  .projects-grid::before {
+    width: 820px;
+    height: 410px; /* half circle height */
+    border-top: 1.8px solid rgba(255,255,255,0.06);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45) inset;
+  }
+  /* inner arc (concentric, slightly smaller) */
+  .projects-grid::after {
+    width: 680px;
+    height: 340px;
+    border-top: 1px dashed rgba(255,255,255,0.04);
+    bottom: 36px; /* slightly higher to create spacing between arcs */
   }
 
-  /* Place four cards along a semicircle (top arc) */
-  .projects-grid .project-card:nth-child(1) {
-    left: 28%;
-    top: 68%;
-    transform: translate(-50%, -50%) rotate(-18deg);
-    z-index: 10;
-  }
-  .projects-grid .project-card:nth-child(2) {
-    left: 42%;
-    top: 36%;
-    transform: translate(-50%, -50%) rotate(-6deg);
-    z-index: 12;
-  }
-  .projects-grid .project-card:nth-child(3) {
-    left: 58%;
-    top: 36%;
-    transform: translate(-50%, -50%) rotate(6deg);
-    z-index: 12;
-  }
-  .projects-grid .project-card:nth-child(4) {
-    left: 72%;
-    top: 68%;
-    transform: translate(-50%, -50%) rotate(18deg);
-    z-index: 10;
+  /* Project buttons: small circular buttons placed radially along the outer arc.
+     We place them by rotating around a center point and translating outward by radius.
+     The double rotate keeps the button visually upright. */
+  .projects-grid .project-card {
+    position: absolute;
+    left: 50%;
+    bottom: 12px; /* baseline matches the arcs' baseline */
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: 50% 100%; /* rotate around the baseline center */
+    transition: transform 360ms var(--ease-standard), box-shadow 220ms ease, background 220ms ease;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
   }
 
-  /* Make hover/focus/open state visually pop above other cards */
+  /* angles chosen to spread four buttons evenly along the semicircle */
+  .projects-grid .project-card:nth-child(1) { transform: rotate(-70deg) translateY(-200px) rotate(70deg); z-index: 11; }
+  .projects-grid .project-card:nth-child(2) { transform: rotate(-25deg) translateY(-200px) rotate(25deg); z-index: 13; }
+  .projects-grid .project-card:nth-child(3) { transform: rotate(25deg) translateY(-200px) rotate(-25deg); z-index: 13; }
+  .projects-grid .project-card:nth-child(4) { transform: rotate(70deg) translateY(-200px) rotate(-70deg); z-index: 11; }
+
+  /* visual affordance on hover/focus */
   .projects-grid .project-card:hover,
-  .projects-grid .project-card:focus-within,
-  .projects-grid .project-card.is-open {
-    z-index: 10001; /* align with backdrop rules so card is above backdrop */
+  .projects-grid .project-card:focus-within {
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 18px 40px rgba(50,128,160,0.12);
+    transform: scale(1.04) translateZ(0);
   }
+
+  /* When opened, keep card above backdrop and allow existing .is-open fixed overlay rules to apply */
+  .projects-grid .project-card.is-open { z-index: 10002; }
 }
 
 /* Backdrop used when a card is open to capture outside clicks and dim background */
