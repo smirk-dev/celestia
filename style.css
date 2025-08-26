@@ -1164,87 +1164,107 @@ body {
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-    .sidebar-nav {
-        width: 180px;
-    }
-    .nav-logo {
-        padding-left: 16px;
-    }
-    .nav-menu {
-        padding-left: 16px;
-    }
-    .sidebar-nav::before {
-        left: 12px;
-    }
+  .sidebar-nav {
+    width: 180px;
+  }
+  .nav-logo {
+    padding-left: 16px;
+  }
+  .nav-menu {
+    padding-left: 16px;
+  }
+  .sidebar-nav::before {
+    left: 12px;
+  }
   /* Removed nav marker left offsets so items remain aligned */
-    .main-content {
-        margin-left: 0;
-    }
-    .hero-title {
-        font-size: 3rem;
-    }
-    .section-title {
-        font-size: 2.5rem;
-    }
-}@media (max-width: 768px) {
-    .sidebar-nav {
-      font-size: var(--font-size-xl);
-      letter-spacing: 0.04em;
-      color: var(--color-text-secondary);
-      font-weight: var(--font-weight-medium);
-      margin-bottom: 0;
-        transform: translateX(0);
-    }
+  .main-content {
+    margin-left: 0;
+  }
+  .hero-title {
+    font-size: 3rem;
+  }
+  .section-title {
+    font-size: 2.5rem;
+  }
+  /* Reduce circular hero size on medium screens */
+  .hero-content {
+    grid-template-columns: 1fr 520px;
+  }
+  .hero-3d-placeholder {
+    width: 520px;
+    height: 520px;
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar-nav {
+    font-size: var(--font-size-xl);
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: 0;
+    transform: translateX(0);
+  }
     
-    .main-content {
-        margin-left: 0;
-    }
+  .main-content {
+    margin-left: 0;
+  }
     
-    .hero-title {
-        font-size: 2.5rem;
-        letter-spacing: 2px;
-    }
+  .hero-title {
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+  }
     
-    .hero-3d-placeholder {
-        width: 300px;
-        height: 200px;
-    }
+  /* Stack layout on smaller screens */
+  .hero-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 20px;
+    padding: var(--space-24);
+  }
     
-    .about-content {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
+  .hero-3d-placeholder {
+    width: 360px;
+    height: 360px;
+    margin: 0 auto;
+  }
     
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
+  .about-content {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
     
-    .section-container {
-        padding: var(--space-24);
-    }
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
     
-    .section-title {
-        font-size: 2rem;
-    }
+  .section-container {
+    padding: var(--space-24);
+  }
+    
+  .section-title {
+    font-size: 2rem;
+  }
 }
 
 @media (max-width: 480px) {
-    .hero-title {
-        font-size: 2rem;
-    }
+  .hero-title {
+    font-size: 2rem;
+  }
     
-    .hero-3d-placeholder {
-        width: 250px;
-        height: 150px;
-    }
+  .hero-3d-placeholder {
+    width: 260px;
+    height: 260px;
+    margin: 0 auto;
+  }
     
-    .section-title {
-        font-size: 1.8rem;
-    }
+  .section-title {
+    font-size: 1.8rem;
+  }
     
-    .nav-logo .logo-text {
-        font-size: var(--font-size-lg);
-    }
+  .nav-logo .logo-text {
+    font-size: var(--font-size-lg);
+  }
 }
 
 /* Force entire site background to pure black and remove section gradients */
