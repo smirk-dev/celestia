@@ -982,7 +982,8 @@ body {
   display: inline-block; /* so transform scale doesn't reflow siblings */
 }
 
-/* enlarge and bold the link when hovered, focused, or active */
+./* enlarge and bold the link when hovered, focused, or active */
+/* NOTE: I can tune the scale amount, font-weight, or transition timing if you'd like a stronger effect. */
 .nav-menu a:hover,
 .nav-menu a:focus,
 .nav-menu a.active {
