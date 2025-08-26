@@ -808,7 +808,8 @@ body {
   position: absolute;
   /* align with the marker area using the nav padding variable */
   /* position vertical line so its center matches the knob's center */
-  left: calc(var(--nav-padding-left, 80px) - 6.25px);
+  left: var(--nav-padding-left, 80px);
+  transform: translateX(-50%);
   top: 0;
   bottom: 0;
   width: 2.5px;
@@ -823,9 +824,9 @@ body {
 .nav-menu::after {
   content: '\2726'; /* Star character */
   position: absolute;
-  left: calc(var(--nav-padding-left, 80px) - 16px);
+  left: var(--nav-padding-left, 80px);
   top: var(--knob-top, 0px);
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
   width: 22px;
   height: 22px;
   display: flex;
