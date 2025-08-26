@@ -64,7 +64,11 @@ function initNavObserver() {
 
         if (visible && visible.target && visible.target.id) {
             updateActiveNav(visible.target.id);
+            return;
         }
+
+        // If nothing is intersecting, clear active nav so selection doesn't persist off-screen
+        updateActiveNav(null);
     }, options);
 
     // Observe only sections which have matching nav links
@@ -90,6 +94,9 @@ function updateActiveNav(activeLink) {
         link.classList.remove('active');
         if (link.parentElement) link.parentElement.classList.remove('active');
     });
+
+    // If explicitly asked to clear selection
+    if (activeLink === null) return;
 
     // Allow passing either an Element (link) or a string id
     if (!activeLink) return;
