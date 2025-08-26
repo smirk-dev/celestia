@@ -841,13 +841,11 @@ body {
   opacity: var(--knob-opacity, 0);
 }
 
-/* shorten decorative vertical line on very wide screens but keep it visible at all sizes */
+/* shorten decorative vertical line so it doesn't overlap large hero circle */
 @media (min-width: 1200px) {
   .nav-menu::before {
-    /* use clamped values so top/bottom never force a negative height */
-    top: clamp(20px, 12vh, 120px);
-    bottom: clamp(40px, 30vh, 420px);
-    min-height: 40px; /* ensure it's always visible */
+    top: 120px;
+    bottom: 420px;
   }
 }
 
