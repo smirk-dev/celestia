@@ -308,6 +308,15 @@ html {
   box-sizing: border-box;
 }
 
+/* Smooth, connected scrolling between full-screen sections */
+html, body {
+  scroll-behavior: smooth;
+  /* make the viewport snap to sections vertically for a seamless transition */
+  scroll-snap-type: y mandatory;
+  /* respect any offsets used by JS when scrolling to anchors */
+  scroll-padding-top: 50px;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -1393,4 +1402,12 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
     font-size: clamp(2.5rem, 4vw, 4rem);
     margin-left: 0;
   }
+}
+
+/* Make all top-level sections behave as snap points and occupy viewport height
+   so the next section flows in smoothly instead of 'cutting in'. */
+section {
+  min-height: 100vh; /* ensure section covers viewport so snap is clean */
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
