@@ -138,7 +138,7 @@
   --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Layout */
-  --container-sm: 640px;
+  --container-sm: 500px;
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
@@ -617,7 +617,7 @@ select.form-control {
   padding-left: var(--space-16);
 }
 
-@media (min-width: 640px) {
+@media (min-width: 500px) {
   .container {
     max-width: var(--container-sm);
   }
@@ -967,7 +967,7 @@ body {
   width: 100%;
   max-width: 1200px;
   display: grid;
-  grid-template-columns: 1fr 640px; /* left: title, right: circular hero */
+  grid-template-columns: 1fr 500px; /* left: title, right: circular hero */
   align-items: center;
   gap: 48px;
   padding: var(--space-32);
@@ -998,8 +998,8 @@ body {
 }
 
 .hero-3d-placeholder {
-  width: 640px;   /* ~60% larger than previous 400px */
-  height: 640px;  /* make it a circle by keeping width == height */
+  width: 500px;   /* ~60% larger than previous 400px */
+  height: 500px;  /* make it a circle by keeping width == height */
   background: transparent;
   border: 3px solid rgba(182,224,254,0.12);
   border-radius: 50%;
