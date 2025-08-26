@@ -966,17 +966,25 @@ body {
 /* Hero Section (restored to original centered layout) */
 .hero-section {
   height: 100vh;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
   position: relative;
+  /* push content right to clear the fixed sidebar (sidebar width + gap) */
+  padding-left: 360px;
 }
 
 .hero-content {
-  text-align: center;
-  max-width: 800px;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) clamp(260px, 40vw, 520px);
+  gap: var(--space-32);
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
   padding: var(--space-32);
+  margin: 0 auto;
+  text-align: left;
 }
 
 .hero-logo {
@@ -1010,10 +1018,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: var(--space-32) auto;
+  margin: 0;
   transition: all var(--duration-normal) var(--ease-standard);
   box-shadow: none !important;
   overflow: hidden;
+  justify-self: end; /* push the circle to the right column */
 }
 
 
