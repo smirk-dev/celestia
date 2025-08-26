@@ -781,11 +781,25 @@ body {
   left: 70px;
   top: 120px;
   width: 2.5px;
-  height: calc(100vh - 160px);
+  height: 56px; /* decorative accent behind logo */
   background: linear-gradient(180deg, #b6e0fe 0%, #222 100%);
   border-radius: 2px;
   z-index: 0;
   box-shadow: 0 0 16px #b6e0fe55;
+}
+
+/* Vertical line matching the menu height so it only extends as far as the text */
+.nav-menu::before {
+  content: '';
+  position: absolute;
+  left: 64px; /* aligns with item markers */
+  top: 0;
+  bottom: 0;
+  width: 2.5px;
+  background: linear-gradient(180deg, #b6e0fe 0%, #6e7fa3 100%);
+  border-radius: 2px;
+  z-index: 0;
+  box-shadow: 0 0 12px #b6e0fe44;
 }
 
 .nav-logo {
