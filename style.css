@@ -1489,22 +1489,10 @@ body {
 }
 
 /* Expanded state: hover, focus-within, or programmatic .is-open */
-.project-card:hover,
-.project-card:focus-within,
-.project-card.is-open {
-  z-index: 9999;
-  background: rgba(0,0,0,0.88);
-  width: 60vw;
-  height: 60vh;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  transition: all 380ms cubic-bezier(0.16, 1, 0.3, 1);
-  animation: projectExpand 380ms cubic-bezier(0.16, 1, 0.3, 1);
+.project-card:hover {
+  box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 2px 0 #b6e0fe66 inset;
+  transform: translateY(-10px);
+  transition: box-shadow 0.4s cubic-bezier(0.85,0,0.15,1), transform 0.3s cubic-bezier(0.85,0,0.15,1);
 }
 
 .project-card.is-open .project-video,
