@@ -796,6 +796,16 @@ body {
   padding: 0;
 }
 
+/* slide-out hidden state */
+.sidebar-nav {
+  transition: transform 320ms cubic-bezier(0.22,1,0.36,1), opacity 220ms ease;
+}
+.sidebar-nav.hidden {
+  transform: translateX(-340px); /* hide fully to the left (width + gap) */
+  opacity: 0;
+  pointer-events: none; /* prevent interaction while hidden */
+}
+
 .sidebar-nav::before {
   /* decorative accent behind logo intentionally hidden to avoid peeking */
   content: '';

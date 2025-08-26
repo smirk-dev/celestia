@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceCards();
     initParallaxEffect();
     initHoverEffects();
+    initAutoHideSidebar();
 });
 
 /* ------------------------- Navigation ------------------------- */
@@ -143,6 +144,56 @@ function initMobileMenu() {
             document.querySelector('.sidebar-nav')?.classList.remove('open');
         }
     });
+}
+
+/* ------------------------- Auto-hide Sidebar ------------------------- */
+function initAutoHideSidebar() {
+    const sidebar = document.querySelector('.sidebar-nav');
+    if (!sidebar) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    let hideTimeout = null;
+
+    function hideSidebar() {
+        sidebar.classList.add('hidden');
+    }
+
+    function showSidebar() {
+        sidebar.classList.remove('hidden');
+    }
+
+    // Hide immediately when the user starts scrolling down; show when at top
+    window.addEventListener('scroll', () => {
+        const current = window.scrollY;
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                if (current > lastScrollY && current > 20) {
+                    hideSidebar();
+                } else if (current <= 20) {
+                    showSidebar();
+                }
+                lastScrollY = current;
+                ticking = false;
+            });
+            ticking = true;
+        }
+        // ensure we don't leave it hidden when the user stops near the left edge
+        if (hideTimeout) { clearTimeout(hideTimeout); hideTimeout = null; }
+    }, { passive: true });
+
+    // Show sidebar if mouse moves near the left edge (within 48px)
+    document.addEventListener('mousemove', (e) => {
+        if (e.clientX <= 48) {
+            showSidebar();
+        }
+    });
+
+    // Also show if touchstart near left edge on touch devices
+    document.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        if (touch && touch.clientX <= 48) showSidebar();
+    }, { passive: true });
 }
 
 function createMobileMenuToggle() {
