@@ -45,9 +45,9 @@
 
   /* Semantic Color Tokens (Light Mode) */
   --color-background: #000000;
-  --color-surface: var(--color-cream-100);
-  --color-text: var(--color-slate-900);
-  --color-text-secondary: var(--color-slate-500);
+  --color-surface: #0b0b0b;
+  --color-text: var(--color-white);
+  --color-text-secondary: rgba(255,255,255,0.72);
   --color-primary: var(--color-teal-500);
   --color-primary-hover: var(--color-teal-600);
   --color-primary-active: var(--color-teal-700);
