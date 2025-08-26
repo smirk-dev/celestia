@@ -30,6 +30,20 @@ function initNavigation() {
 
     // Initialize the IntersectionObserver which is the single source of truth
     setupSectionObserver();
+
+    // If the page was opened with a hash (direct link to a section), highlight that nav item
+    const initialHash = window.location.hash.replace('#', '');
+    if (initialHash) {
+        // small timeout to allow layout/observer initialization
+        setTimeout(() => setActiveNavById(initialHash), 60);
+    }
+
+    // Update active nav when the hash changes (back/forward or anchor navigation)
+    window.addEventListener('hashchange', () => {
+        const id = window.location.hash.replace('#', '');
+        if (id) setActiveNavById(id);
+        else clearActiveNav();
+    });
 }
 
 // Clear all active states on nav links and their parents
