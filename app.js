@@ -23,10 +23,9 @@ function initNavigation() {
             if (!targetSection) return;
             const offsetTop = targetSection.offsetTop - 50;
             window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-            setActiveNavById(targetId); // <-- Immediately update nav highlight
             closeMobileMenu();
         });
-
+    });
 
     // Initialize the IntersectionObserver which is the single source of truth
     setupSectionObserver();
