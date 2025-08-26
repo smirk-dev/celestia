@@ -984,10 +984,10 @@ body {
 
 .hero-content {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   display: grid;
-  /* two equal columns so the right column is the right-half of available space */
-  grid-template-columns: 1fr 1fr;
+  /* left column holds title/content, right column holds the hero; keep right column capped */
+  grid-template-columns: 1fr minmax(240px, 46vw);
   align-items: center;
   gap: 48px;
   padding: var(--space-32);
@@ -1016,11 +1016,12 @@ body {
   /* keep title anchored left column and away from the circle */
   grid-column: 1 / 2;
   padding-right: 24px;
+  justify-self: start;
 }
 
 .hero-3d-placeholder {
-  /* responsive circular container: cap at 640px but use viewport for centering */
-  width: min(56vw, 640px);
+  /* responsive circular container: slightly reduced and adaptive */
+  width: clamp(220px, 36vw, 520px);
   aspect-ratio: 1 / 1; /* keeps perfect circle */
   background: transparent;
   border: 3px solid rgba(182,224,254,0.12);
