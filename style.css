@@ -1034,6 +1034,10 @@ body {
   border-radius: 50%;
   object-fit: cover;
   display: block;
+  /* slightly zoom the video so it fills the circular frame more tightly */
+  transform: scale(1.10);
+  transform-origin: center center;
+  will-change: transform;
 }
 
 .placeholder-content {
@@ -1321,8 +1325,8 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
   .hero-3d-placeholder {
   /* use fixed positioning so the circle stays visually on the right and vertically offset from the top */
   position: fixed;
-  right: 6vw; /* push the circle towards the right edge of the viewport */
-  top: 18vh; /* lower the circle so it doesn't sit under the header */
+  right: calc(6vw - 10px); /* move 10px further to the right */
+  top: calc(18vh + 40px); /* move 20px down */
   transform: none;
   justify-self: unset;
   margin: 0;
