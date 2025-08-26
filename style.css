@@ -930,20 +930,7 @@ body {
   filter: drop-shadow(0 0 8px #b6e0fe99);
 }
 
-/* show the star marker on hover as well as active */
-.nav-menu li:hover::before {
-  content: '\2726';
-  color: #b6e0fe;
-  font-size: 22px;
-  width: 18px;
-  height: 18px;
-  background: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 18px;
-  filter: drop-shadow(0 0 8px #b6e0fe99);
-}
+/* Hover no longer shows the star marker — only the active item displays it */
 
 /* No HOME-specific rule here; it will inherit .nav-menu a */
 
@@ -1009,8 +996,13 @@ body {
 
 /* enlarge and bold the link when hovered, focused, or active */
 /* NOTE: I can tune the scale amount, font-weight, or transition timing if you'd like a stronger effect. */
-.nav-menu a:hover,
-.nav-menu a:focus,
+/* Active nav item gets the strong highlight; focus keeps a subtle indicator only */
+.nav-menu a:focus {
+  color: var(--color-primary);
+  outline: none;
+  text-shadow: 0 2px 8px rgba(50,184,198,0.12);
+}
+
 .nav-menu a.active {
   color: var(--color-primary);
   opacity: 1;
@@ -1024,7 +1016,7 @@ body {
   .nav-menu a:hover,
   .nav-menu a:focus,
   .nav-menu a.active {
-  transform: scale(2.12);
+    transform: scale(2.12);
   }
 }
 
