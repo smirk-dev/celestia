@@ -847,6 +847,25 @@ body {
   margin-bottom: 0;
 }
 
+.nav-logo img {
+  width: 120px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.nav-logo .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 .logo-icon {
   font-size: 3.2rem;
   color: #b6e0fe;
