@@ -1332,18 +1332,21 @@ body {
 
 /* Fancy horizontal scroll project cards */
 .fancy-projects-scroll {
-  position: relative;
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
   width: 100vw;
   max-width: 1100px;
   height: 440px;
   margin: 0 auto;
-  overflow: hidden;
+  gap: 48px;
+  scrollbar-width: thin;
+  scrollbar-color: #b6e0fe #232b3a;
 }
 .fancy-projects-scroll .project-card {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 76vw;
+  flex: 0 0 80vw;
   max-width: 820px;
   height: 400px;
   background: linear-gradient(120deg, #1a1a1a 60%, #232b3a 100%);
@@ -1352,28 +1355,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: translate(-50%, 0) scale(1);
-  opacity: 0;
-  transition: transform 1.3s cubic-bezier(0.85,0,0.15,1), opacity 0.9s cubic-bezier(0.85,0,0.15,1);
-  z-index: 1;
-  pointer-events: none;
-}
-.fancy-projects-scroll .project-card.active {
+  margin: 0;
+  scroll-snap-align: center;
   opacity: 1;
-  z-index: 10;
-  transform: translate(-50%, 0) scale(1);
-}
-.fancy-projects-scroll .project-card.to-left {
-  opacity: 0;
-  /* add spacing by increasing translateX */
-  transform: translate(-140%, 0) scale(0.92) rotate(-6deg);
-  z-index: 2;
-}
-.fancy-projects-scroll .project-card.to-right {
-  opacity: 0;
-  /* add spacing by increasing translateX */
-  transform: translate(140%, 0) scale(0.92) rotate(6deg);
-  z-index: 2;
+  transition: box-shadow 0.4s cubic-bezier(0.85,0,0.15,1);
 }
 .project-card-content {
   color: #fff;
@@ -1401,20 +1386,14 @@ body {
 @media (max-width: 900px) {
   .fancy-projects-scroll {
     height: 340px;
+    gap: 24px;
   }
   .fancy-projects-scroll .project-card {
-    width: 94vw;
-    max-width: 98vw;
+    flex: 0 0 96vw;
+    max-width: 99vw;
     height: 300px;
     border-radius: 16px;
     padding: 0;
-    transition: transform 1s cubic-bezier(0.85,0,0.15,1), opacity 0.7s cubic-bezier(0.85,0,0.15,1);
-  }
-  .fancy-projects-scroll .project-card.to-left {
-    transform: translate(-120%, 0) scale(0.92) rotate(-6deg);
-  }
-  .fancy-projects-scroll .project-card.to-right {
-    transform: translate(120%, 0) scale(0.92) rotate(6deg);
   }
   .project-card-content {
     padding: 24px 12px 24px 12px;

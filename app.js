@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAutoHideSidebar();
     initProjectVideoHandlers();
     initContactForm();
-    initFancyProjectsScroll();
+    // No more initFancyProjectsScroll();
 });
 
 /* ------------------------- Navigation ------------------------- */
@@ -470,58 +470,7 @@ function removeProjectBackdrop() {
     document.querySelectorAll('.card-backdrop').forEach(b => b.remove());
 }
 
-/* ------------------------- Fancy Projects Scroll Animation ------------------------- */
-function initFancyProjectsScroll() {
-    const container = document.querySelector('.fancy-projects-scroll');
-    if (!container) return;
-    const cards = Array.from(container.querySelectorAll('.project-card'));
-    if (cards.length !== 3) return;
-
-    // Only scroll position controls the animation
-    let current = 0;
-    function updateCards(idx) {
-        cards.forEach((card, i) => {
-            card.classList.remove('active', 'to-left', 'to-right');
-            if (i === idx) card.classList.add('active');
-            else if (i < idx) card.classList.add('to-left');
-            else if (i > idx) card.classList.add('to-right');
-        });
-    }
-    updateCards(current);
-
-    // Efficient scroll-driven card switching
-    const section = document.getElementById('projects');
-    if (!section) return;
-
-    function getSectionScrollProgress() {
-        const rect = section.getBoundingClientRect();
-        const winH = window.innerHeight;
-        const total = rect.height - winH;
-        if (total <= 0) return 0;
-        const scrolled = Math.min(Math.max(-rect.top, 0), total);
-        return scrolled / total;
-    }
-
-    let ticking = false;
-    function onScroll() {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                const progress = getSectionScrollProgress();
-                let idx = 0;
-                if (progress > 0.66) idx = 2;
-                else if (progress > 0.33) idx = 1;
-                else idx = 0;
-                if (idx !== current) {
-                    current = idx;
-                    updateCards(current);
-                }
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-}
+// FancyProjectsScroll logic removed: now handled by native horizontal scroll snap
 
 /* ------------------------- Contact form (EmailJS) ------------------------- */
 function initContactForm() {
