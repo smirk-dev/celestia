@@ -34,8 +34,9 @@ function initNavigation() {
                     behavior: 'smooth'
                 });
                 
-                // Update active navigation
-                updateActiveNav(this);
+                // Don't force active here; let the IntersectionObserver (or center fallback)
+                // set the active state once the target section is in view. This avoids
+                // multiple items being highlighted during the scroll animation.
                 
                 // Close mobile menu if open
                 closeMobileMenu();
@@ -411,7 +412,6 @@ function initNavigationFallback() {
                 
                 if (targetElement) {
                     smoothScrollTo(targetElement);
-                    updateActiveNav(this);
                     closeMobileMenu();
                 }
             });
