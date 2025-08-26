@@ -1214,27 +1214,18 @@ body {
 }
 
 .services-grid {
-  display: grid;
-  /* responsive, centered grid: auto-fit ensures cards flow and center nicely */
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--space-24);
-  margin-top: var(--space-32);
-  max-width: 1100px;
-  margin-left: auto;
-  margin-right: auto;
-  justify-items: center; /* center cards inside each grid cell */
-}
-
-/* Mirror project-card behavior but open on click (button-like) */
-.services-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: center;
   max-width: 1100px;
   margin: 0 auto;
 }
 
 .service-card {
-  width: 100%;
-  max-width: 520px; /* card width is constrained so grid centers nicely */
-  height: 120px;
+  width: calc(100% - 200px);
+  max-width: 1000px;
+  height: 64px; /* thin rectangle like projects */
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.04);
   display: flex;
@@ -1243,8 +1234,8 @@ body {
   overflow: visible;
   transition: all 360ms var(--ease-standard);
   position: relative;
-  padding: 16px 20px;
-  border-radius: 8px;
+  padding: 12px 20px;
+  border-radius: 6px;
 }
 
 .service-card .card-inner {
@@ -1268,7 +1259,7 @@ body {
   top: 50%;
   transform: translateY(-50%);
   width: 0;
-  height: calc(100% - 32px);
+  height: calc(100% - 24px);
   object-fit: cover;
   opacity: 0;
   transition: width 360ms var(--ease-standard), opacity 280ms var(--ease-standard);
@@ -1277,9 +1268,9 @@ body {
   background: #000;
 }
 
-/* Open state triggered by click (toggle .is-open) */
+/* Open state: click toggles .is-open (JS) */
 .service-card.is-open {
-  z-index: 9998;
+  z-index: 9999;
   background: rgba(0,0,0,0.88);
   width: 60vw;
   height: 60vh;
@@ -1301,7 +1292,7 @@ body {
 }
 
 @media (max-width: 900px) {
-  .service-card { width: calc(100% - 40px); max-width: none; height: 100px; }
+  .service-card { width: calc(100% - 40px); max-width: none; }
   .service-card.is-open {
     width: calc(100% - 32px);
     height: calc(100vh - 120px);
@@ -1313,28 +1304,7 @@ body {
   .service-card.is-open .service-video { width: calc(100% - 64px); }
 }
 
-.service-card {
-    background-color: #8FA3B0;
-    border-radius: var(--radius-lg);
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--duration-normal) var(--ease-standard);
-    cursor: pointer;
-}
-
-.service-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(143, 163, 176, 0.3);
-}
-
-.card-content {
-    text-align: center;
-    color: #2a2a2a;
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-medium);
-}
+/* legacy .service-card visual reset removed to avoid conflict; .service-card uses project-like styling above */
 
 /* Projects and Contact Sections */
 .projects-section,
