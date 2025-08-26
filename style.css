@@ -831,6 +831,7 @@ body {
   z-index: 1;
 }
 
+
 .nav-menu li {
   width: 100%;
   position: relative;
@@ -838,12 +839,15 @@ body {
   align-items: center;
 }
 
+/* Marker before each nav item - inline so text lines up consistently */
 .nav-menu li::before {
   content: '';
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 18px;
-  height: 1.5px;
-  background: #b6e0fe33;
+  height: 18px;
+  background: transparent;
   margin-right: 18px;
   border-radius: 2px;
   transition: all 0.2s;
@@ -891,16 +895,13 @@ body {
 
 /* Vertical line for nav items */
 .nav-menu li:not(:first-child)::before {
+  /* Keep marker styling consistent for non-first items (no absolute positioning) */
   content: '';
-  position: absolute;
-  left: -25px;
-  top: 50%;
-  width: 10px;
-  height: 2px;
-  background: #b6e0fe44;
-  border-radius: 2px;
-  transform: translateY(-50%);
-  z-index: 1;
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  margin-right: 18px;
 }
 
 /* Active nav item style */
@@ -1140,12 +1141,7 @@ body {
     .sidebar-nav::before {
         left: 12px;
     }
-    .nav-menu li:first-child::before {
-        left: -16px;
-    }
-    .nav-menu li:not(:first-child)::before {
-        left: -10px;
-    }
+  /* Removed nav marker left offsets so items remain aligned */
     .main-content {
         margin-left: 0;
     }
