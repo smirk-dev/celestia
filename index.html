@@ -137,7 +137,48 @@
         <section id="contact" class="contact-section">
             <div class="section-container">
                 <h2 class="section-title">CONTACT</h2>
-                <p>Contact information coming soon...</p>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <p class="contact-lead">Interested in working together or have a question? Send me a message and I'll get back to you.</p>
+                        <ul class="contact-details">
+                            <li><strong>Email:</strong> <a href="mailto:hello@example.com">hello@example.com</a></li>
+                            <li><strong>Location:</strong> Remote / Your City</li>
+                            <li><strong>Availability:</strong> Open for freelance & collaboration</li>
+                        </ul>
+                        <div class="social-links">
+                            <!-- add links to your profiles -->
+                            <a href="#">Twitter</a> · <a href="#">GitHub</a> · <a href="#">LinkedIn</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-wrap">
+                        <form id="contact-form" class="contact-form" autocomplete="on">
+                            <input type="hidden" id="emailjs_service_id" value="YOUR_SERVICE_ID">
+                            <input type="hidden" id="emailjs_template_id" value="YOUR_TEMPLATE_ID">
+                            <input type="hidden" id="emailjs_public_key" value="YOUR_PUBLIC_KEY">
+
+                            <label for="name">Name</label>
+                            <input id="name" name="from_name" type="text" required placeholder="Your name" />
+
+                            <label for="email">Email</label>
+                            <input id="email" name="reply_to" type="email" required placeholder="you@domain.com" />
+
+                            <label for="subject">Subject</label>
+                            <input id="subject" name="subject" type="text" placeholder="Message subject" />
+
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="6" required placeholder="Tell me about your project..."></textarea>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--primary">Send Message</button>
+                                <button type="button" id="contact-reset" class="btn btn--outline">Reset</button>
+                            </div>
+
+                            <div id="contact-alert" role="status" aria-live="polite" class="contact-alert" hidden></div>
+                        </form>
+                        <p class="privacy-note">By sending a message you agree to be contacted. Your data will not be shared.</p>
+                    </div>
+                </div>
             </div>
         </section>
         
