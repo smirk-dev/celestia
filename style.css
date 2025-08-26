@@ -1008,6 +1008,13 @@ body {
   border-radius: 4px;
 }
 
+.nav-menu a:hover {
+  /* Subtle hover animation: temporary scale + slight color (does not set .active) */
+  color: var(--color-primary-hover);
+  transform: scale(1.12);
+  text-shadow: 0 1px 6px rgba(50,184,198,0.12);
+}
+
 .nav-menu a.active {
   color: var(--color-primary);
   opacity: 1;
@@ -1018,8 +1025,10 @@ body {
 
 /* slightly smaller scale on medium/narrow screens to avoid layout issues */
 @media (max-width: 900px) {
-  .nav-menu a:hover,
-  .nav-menu a:focus,
+  /* smaller hover/active scale on narrow screens */
+  .nav-menu a:hover {
+    transform: scale(1.08);
+  }
   .nav-menu a.active {
     transform: scale(2.12);
   }
