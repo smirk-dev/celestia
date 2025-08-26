@@ -1228,6 +1228,7 @@ body {
   }
   .nav-menu {
     padding-left: 16px;
+    --nav-padding-left: 16px;
   }
   .sidebar-nav::before {
     left: 12px;
