@@ -862,6 +862,7 @@ body {
   justify-content: center;
   margin-right: 18px;
   filter: drop-shadow(0 0 8px #b6e0fe99);
+}
 
 /* Make HOME (first nav item) smaller */
 .nav-menu li:first-child a {
@@ -1172,11 +1173,11 @@ body {
     }
 }@media (max-width: 768px) {
     .sidebar-nav {
-        transform: translateX(-100%);
-        transition: transform var(--duration-normal) var(--ease-standard);
-    }
-    
-    .sidebar-nav.open {
+      font-size: var(--font-size-xl);
+      letter-spacing: 0.04em;
+      color: var(--color-text-secondary);
+      font-weight: var(--font-weight-medium);
+      margin-bottom: 0;
         transform: translateX(0);
     }
     
