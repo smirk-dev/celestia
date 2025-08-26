@@ -864,10 +864,7 @@ body {
   filter: drop-shadow(0 0 8px #b6e0fe99);
 }
 
-/* Make HOME (first nav item) smaller */
-.nav-menu li:first-child a {
-  font-size: 1.3rem;
-}
+/* No HOME-specific rule here; it will inherit .nav-menu a */
 
 @media (max-width: 900px) {
   .sidebar-nav {
@@ -890,9 +887,6 @@ body {
     font-size: 1rem;
   }
   /* Removed HOME-specific override to keep nav items consistent */
-  /* No HOME-specific sizing — inherits .nav-menu a */
-  text-shadow: 0 0 8px #b6e0fe99;
-  z-index: 2;
 }
 
 /* Vertical line for nav items */
@@ -917,17 +911,7 @@ body {
   text-shadow: 0 0 16px #b6e0fecc, 0 0 2px #fff;
 }
 
-/* HOME nav item larger */
-.nav-menu li:first-child a {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-secondary);
-  opacity: 0.85;
-  letter-spacing: 0.04em;
-  transition: color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard),
-    font-size 0.2s cubic-bezier(0.4,0,0.2,1), font-weight 0.2s cubic-bezier(0.4,0,0.2,1),
-    text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
-}
+/* HOME-specific rules removed so all nav items match */
 
 /* Other nav items faded */
 
