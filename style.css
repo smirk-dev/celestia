@@ -1361,6 +1361,9 @@ body {
 
 .contact-form-wrap { background: rgba(255,255,255,0.02); padding: 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
 .contact-form label { display: block; margin-bottom: 6px; font-size: 0.9rem; color: var(--color-text-secondary); }
+.contact-info, .contact-form-wrap, .contact-details, .contact-form label, .contact-lead {
+  text-align: left;
+}
 .contact-form input[type="text"],
 .contact-form input[type="email"],
 .contact-form textarea {
