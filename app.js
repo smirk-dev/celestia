@@ -12,194 +12,82 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Navigation functionality
 function initNavigation() {
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    const sections = document.querySelectorAll('section[id]');
-    
-    // Handle navigation clicks
+    const navLinks = Array.from(document.querySelectorAll('.nav-menu a'));
+
+    // Clicks should scroll but must not force the active state; observer will set it.
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            
-            // Get target from href attribute
             const targetId = this.getAttribute('href').substring(1);
             const targetSection = document.getElementById(targetId);
-            
-            if (targetSection) {
-                // Calculate offset for fixed sidebar (280px)
-                const offsetTop = targetSection.offsetTop - 50; // Small padding from top
-                
-                // Smooth scroll to section
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
-                
-                // Don't force active here; let the IntersectionObserver (or center fallback)
-                // set the active state once the target section is in view. This avoids
-                // multiple items being highlighted during the scroll animation.
-                
-                // Close mobile menu if open
-                closeMobileMenu();
-            }
+            if (!targetSection) return;
+
+            const offsetTop = targetSection.offsetTop - 50;
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+            closeMobileMenu();
         });
     });
-    
-    // Handle scroll-based active navigation
-    // Use IntersectionObserver to reliably update the active nav item
-    initNavObserver();
+
+    // Initialize the IntersectionObserver which is the single source of truth
+    setupSectionObserver();
 }
 
-// Use IntersectionObserver to mark the nav link corresponding to the section
-function initNavObserver() {
+// Clear all active states on nav links and their parents
+function clearActiveNav() {
+    const navLinks = document.querySelectorAll('.nav-menu a');
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.parentElement) link.parentElement.classList.remove('active');
+    });
+}
+
+// Set the active nav item by section id
+function setActiveNavById(id) {
+    clearActiveNav();
+    if (!id) return;
+    const link = document.querySelector(`.nav-menu a[href="#${id}"]`);
+    if (link) {
+        link.classList.add('active');
+        if (link.parentElement) link.parentElement.classList.add('active');
+    }
+}
+
+// Observe sections and update nav based on the most visible section
+function setupSectionObserver() {
     const options = {
         root: null,
-        rootMargin: '0px 0px -40% 0px', // trigger when section crosses 60% of viewport
-        threshold: [0.2, 0.4, 0.6]
+        rootMargin: '0px 0px -50% 0px',
+        threshold: [0, 0.25, 0.5, 0.75, 1]
     };
 
+    const observedSections = Array.from(document.querySelectorAll('section[id]'))
+        .filter(sec => document.querySelector(`.nav-menu a[href="#${sec.id}"]`));
+
+    if (!observedSections.length) return;
+
     const observer = new IntersectionObserver((entries) => {
-        // Find the entry with highest intersectionRatio that's intersecting
-        let visible = entries
+        // Pick the intersecting entry with the largest intersectionRatio
+        const visible = entries
             .filter(e => e.isIntersecting)
             .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
         if (visible && visible.target && visible.target.id) {
-            updateActiveNav(visible.target.id);
+            setActiveNavById(visible.target.id);
             return;
         }
 
-        // If nothing is intersecting, clear active nav so selection doesn't persist off-screen
-        updateActiveNav(null);
+        // If none are intersecting, clear the active state
+        clearActiveNav();
     }, options);
 
-    // Observe only sections which have matching nav links
-    const sections = Array.from(document.querySelectorAll('section[id]'))
-        .filter(sec => document.querySelector(`.nav-menu a[href="#${sec.id}"]`));
+    observedSections.forEach(sec => observer.observe(sec));
 
-    sections.forEach(sec => observer.observe(sec));
-
-    // Set initial active based on current viewport
-    const currentlyVisible = sections.find(sec => {
+    // Ensure initial active state matches what's in view (use center heuristic)
+    const initial = observedSections.find(sec => {
         const rect = sec.getBoundingClientRect();
         return rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.25;
     });
-    if (currentlyVisible) updateActiveNav(currentlyVisible.id);
-    
-    // Also add a throttled scroll/resize fallback that picks the section nearest the viewport center
-    window.addEventListener('scroll', throttle(determineActiveSectionByCenter, 120));
-    window.addEventListener('resize', throttle(determineActiveSectionByCenter, 200));
-    // Run once to ensure initial state is correct
-    determineActiveSectionByCenter();
-}
-
-// Find the section nearest the viewport center and mark it active; clear active if none are near
-function determineActiveSectionByCenter() {
-    const sections = Array.from(document.querySelectorAll('section[id]'))
-        .filter(sec => document.querySelector(`.nav-menu a[href="#${sec.id}"]`));
-
-    if (!sections.length) {
-        updateActiveNav(null);
-        return;
-    }
-
-    const viewportCenter = window.innerHeight / 2;
-    let best = { id: null, distance: Infinity };
-
-    sections.forEach(sec => {
-        const rect = sec.getBoundingClientRect();
-        const secCenter = rect.top + rect.height / 2;
-        const distance = Math.abs(secCenter - viewportCenter);
-        if (distance < best.distance) {
-            best = { id: sec.id, distance };
-        }
-    });
-
-    // Only select a section if its center is within half the viewport height (reasonable threshold)
-    if (best.id && best.distance <= (window.innerHeight * 0.5)) {
-        updateActiveNav(best.id);
-    } else {
-        updateActiveNav(null);
-    }
-}
-
-// Update active navigation state
-function updateActiveNav(activeLink) {
-    const navLinks = document.querySelectorAll('.nav-menu a');
-
-    // Clear existing active states on links and parent <li>
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.parentElement) link.parentElement.classList.remove('active');
-    });
-
-    // If explicitly asked to clear selection
-    if (activeLink === null) return;
-
-    // Allow passing either an Element (link) or a string id
-    if (!activeLink) return;
-    if (typeof activeLink === 'string') {
-        const link = document.querySelector(`.nav-menu a[href="#${activeLink}"]`);
-        if (link) {
-            link.classList.add('active');
-            if (link.parentElement) link.parentElement.classList.add('active');
-        }
-        return;
-    }
-
-    // If an element was passed, mark it and its parent <li>
-    if (activeLink instanceof Element) {
-        activeLink.classList.add('active');
-        if (activeLink.parentElement) activeLink.parentElement.classList.add('active');
-    }
-}
-
-// Update navigation based on scroll position
-function updateNavOnScroll() {
-    // Only consider sections that have a corresponding nav link
-    const allSections = Array.from(document.querySelectorAll('section[id]'));
-    const navLinks = Array.from(document.querySelectorAll('.nav-menu a'));
-    const linkedSections = allSections.filter(sec => {
-        return document.querySelector(`.nav-menu a[href="#${sec.id}"]`);
-    });
-
-    const scrollPos = window.scrollY + Math.max(150, window.innerHeight * 0.2); // adaptive offset
-
-    let current = '';
-
-    linkedSections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute('id');
-
-        if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-            current = sectionId;
-        }
-    });
-
-    // If we're at the very top, default to hero
-    if (window.scrollY < 100) {
-        current = 'hero';
-    }
-
-    // If we're near the bottom of the page, pick the last linked section
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
-        const lastLink = navLinks[navLinks.length - 1];
-        if (lastLink) {
-            updateActiveNav(lastLink);
-            return;
-        }
-    }
-
-    // Apply active class to the matching link + its parent <li>
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.parentElement) link.parentElement.classList.remove('active');
-        const linkHref = link.getAttribute('href').substring(1);
-        if (linkHref === current) {
-            link.classList.add('active');
-            if (link.parentElement) link.parentElement.classList.add('active');
-        }
-    });
+    if (initial) setActiveNavById(initial.id);
 }
 
 // Initialize scroll effects
