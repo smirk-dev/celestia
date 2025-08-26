@@ -807,7 +807,8 @@ body {
   content: '';
   position: absolute;
   /* align with the marker area using the nav padding variable */
-  left: calc(var(--nav-padding-left, 80px) - 16px);
+  /* position vertical line so its center matches the knob's center */
+  left: calc(var(--nav-padding-left, 80px) - 6.25px);
   top: 0;
   bottom: 0;
   width: 2.5px;
