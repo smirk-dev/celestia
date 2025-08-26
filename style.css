@@ -759,43 +759,40 @@ body {
 }
 
 /* Sidebar Navigation */
+
+/* --- Redesigned Sci-Fi Sidebar Navigation --- */
 .sidebar-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 320px;
-    height: 100vh;
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    z-index: 1000;
-    border-right: none;
-    box-shadow: none;
-    padding: 0;
-    pointer-events: none;
-}
-
-.sidebar-nav * {
-    pointer-events: auto;
-}
-
-.sidebar-nav::before {
-    content: '';
-    position: absolute;
-    left: 60px;
-    top: 120px;
-    width: 2.5px;
-    height: calc(100vh - 160px);
-    background: linear-gradient(180deg, #b6e0fe 0%, #6e7fa3 100%);
-    border-radius: 2px;
-    z-index: 0;
-    box-shadow: 0 0 16px #b6e0fe55;
-}.nav-logo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 320px;
+  height: 100vh;
+  background: transparent;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 48px 0 32px 72px;
+  z-index: 1000;
+  padding: 0;
+}
+
+.sidebar-nav::before {
+  content: '';
+  position: absolute;
+  left: 70px;
+  top: 120px;
+  width: 2.5px;
+  height: calc(100vh - 160px);
+  background: linear-gradient(180deg, #b6e0fe 0%, #222 100%);
+  border-radius: 2px;
+  z-index: 0;
+  box-shadow: 0 0 16px #b6e0fe55;
+}
+
+.nav-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 40px 0 32px 80px;
   font-size: 2.2rem;
   font-weight: bold;
   letter-spacing: 0.1em;
@@ -815,7 +812,7 @@ body {
 
 .logo-text {
   font-family: 'Orbitron', 'Segoe UI', 'Arial', sans-serif;
-  font-size: 1.3rem;
+  font-size: 2.1rem;
   letter-spacing: 0.18em;
   color: #e6e6e6;
   font-weight: 700;
@@ -824,18 +821,47 @@ body {
 
 .nav-menu {
   list-style: none;
-  padding: 0 0 0 72px;
+  padding: 0 0 0 80px;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
   width: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .nav-menu li {
   width: 100%;
   position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav-menu li::before {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 1.5px;
+  background: #b6e0fe33;
+  margin-right: 18px;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.nav-menu li.active::before,
+.nav-menu li:hover::before {
+  content: '\2726'; /* Star icon */
+  color: #b6e0fe;
+  font-size: 22px;
+  width: 18px;
+  height: 18px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 18px;
+  filter: drop-shadow(0 0 8px #b6e0fe99);
 }
 
 .nav-menu a {
@@ -854,12 +880,40 @@ body {
   margin-left: 0;
   background: none;
   border: none;
+  background: linear-gradient(90deg, #b6e0fe 0%, #fff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.nav-menu a.active, .nav-menu a:hover {
-  color: #e6e6e6;
+.nav-menu a.active,
+.nav-menu a:hover {
+  color: #fff;
   font-weight: 700;
-  text-shadow: 0 0 12px #b6e0fe99, 0 0 2px #fff;
+  text-shadow: 0 2px 16px #b6e0fe99, 0 0 2px #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+@media (max-width: 900px) {
+  .sidebar-nav {
+    width: 70px;
+    padding: 20px 0 0 0;
+  }
+  .nav-logo {
+    margin-left: 10px;
+    margin-bottom: 24px;
+    padding-left: 10px;
+  }
+  .logo-text {
+    font-size: 1.1rem;
+  }
+  .nav-menu {
+    padding-left: 10px;
+    gap: 12px;
+  }
+  .nav-menu a {
+    font-size: 1rem;
+  }
 }
 
 
