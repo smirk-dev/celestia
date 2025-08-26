@@ -1235,3 +1235,21 @@ body {
         font-size: var(--font-size-lg);
     }
 }
+
+/* Force entire site background to pure black and remove section gradients */
+html, body, main, .main-content, section, .hero-section, .about-section, .services-section,
+.projects-section, .contact-section, .container {
+  background: #000000 !important;
+  background-image: none !important;
+}
+
+/* Ensure text remains visible on forced black background */
+html, body, section, .container, .card, .about-text, .projects-section p, .contact-section p {
+  color: var(--color-text) !important;
+}
+
+/* Reduce backgrounds for placeholders that used colored tokens */
+.hero-3d-placeholder, .image-placeholder, .service-card, .card {
+  background: transparent !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
