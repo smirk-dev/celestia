@@ -989,7 +989,7 @@ body {
   opacity: 0.85;
   letter-spacing: 0.04em;
   transition: color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard),
-    transform var(--duration-fast) var(--ease-standard), text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+  transform var(--duration-normal) var(--ease-standard), text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
   transform-origin: left center;
   display: inline-block; /* so transform scale doesn't reflow siblings */
 }
@@ -1011,8 +1011,8 @@ body {
 .nav-menu a:hover {
   /* Subtle hover animation: temporary scale + slight color (does not set .active) */
   color: var(--color-primary-hover);
-  transform: scale(1.12);
-  text-shadow: 0 1px 6px rgba(50,184,198,0.12);
+  transform: scale(1.20);
+  text-shadow: 0 2px 10px rgba(50,184,198,0.14);
 }
 
 .nav-menu a.active {
@@ -1027,7 +1027,7 @@ body {
 @media (max-width: 900px) {
   /* smaller hover/active scale on narrow screens */
   .nav-menu a:hover {
-    transform: scale(1.08);
+    transform: scale(1.14);
   }
   .nav-menu a.active {
     transform: scale(2.12);
