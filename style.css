@@ -803,6 +803,14 @@ body {
   box-shadow: 0 0 12px #b6e0fe44;
 }
 
+/* shorten decorative vertical line so it doesn't overlap large hero circle */
+@media (min-width: 1200px) {
+  .nav-menu::before {
+    top: 120px;
+    bottom: 420px;
+  }
+}
+
 .nav-logo {
   display: flex;
   flex-direction: column;
@@ -1025,6 +1033,7 @@ body {
   overflow: hidden;
   transition: all var(--duration-normal) var(--ease-standard);
   box-shadow: 0 20px 60px rgba(33,128,141,0.12), inset 0 0 30px rgba(182,224,254,0.02);
+  z-index: 2;
 }
 
 .hero-3d-placeholder:hover {
