@@ -973,7 +973,8 @@ body {
   width: 100%;
   max-width: 1200px;
   display: grid;
-  grid-template-columns: 1fr 640px; /* left: title, right: circular hero */
+  /* two equal columns so the right column is the right-half of available space */
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 48px;
   padding: var(--space-32);
@@ -1005,8 +1006,9 @@ body {
 }
 
 .hero-3d-placeholder {
-  width: 500px;   /* ~60% larger than previous 400px */
-  height: 500px;  /* make it a circle by keeping width == height */
+  /* responsive circular container: cap at 640px but use viewport for centering */
+  width: min(56vw, 640px);
+  aspect-ratio: 1 / 1; /* keeps perfect circle */
   background: transparent;
   border: 3px solid rgba(182,224,254,0.12);
   border-radius: 50%;
