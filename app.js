@@ -202,13 +202,3 @@ function initNavigationFallback() {
 
 // Initialize fallback if needed
 initNavigationFallback();
-                }
-            });
-        });
-    }
-}
-
-// Initialize fallback if needed
-document.addEventListener('DOMContentLoaded', function() {
-    initNavigationFallback();
-});
