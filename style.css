@@ -863,10 +863,6 @@ body {
   margin-right: 18px;
   filter: drop-shadow(0 0 8px #b6e0fe99);
 
-/* Make HOME (first nav item) smaller */
-.nav-menu li:first-child a {
-  font-size: 1.3rem;
-}
 
 @media (max-width: 900px) {
   .sidebar-nav {
