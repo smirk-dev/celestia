@@ -907,25 +907,23 @@ body {
 }
 
 /* Other nav items faded */
-.nav-menu li:not(:first-child) a {
-  color: #6e7fa3;
-  font-size: 1.4rem;
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  opacity: 0.7;
-  transition: color 0.2s, opacity 0.2s;
-}
-.nav-menu li:not(:first-child) a.active,
-.nav-menu li:not(:first-child) a:hover {
-  color: #b6e0fe;
-  opacity: 1;
-  text-shadow: 0 0 8px #b6e0fe99;
+
+/* All nav items consistent style */
+.nav-menu a {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  opacity: 0.85;
+  transition: color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard),
+    font-size 0.2s cubic-bezier(0.4,0,0.2,1), font-weight 0.2s cubic-bezier(0.4,0,0.2,1);
 }
 
-/* Main Content */
-.main-content {
-    margin-left: 0;
-    min-height: 100vh;
+.nav-menu a.active,
+.nav-menu a:hover {
+  color: var(--color-primary);
+  opacity: 1;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
 }
 
 /* Hero Section */
