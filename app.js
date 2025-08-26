@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initHoverEffects();
     initAutoHideSidebar();
     initProjectVideoHandlers();
+    initContactForm();
 });
 
 /* ------------------------- Navigation ------------------------- */
@@ -466,4 +467,83 @@ function showProjectBackdrop(card) {
 
 function removeProjectBackdrop() {
     document.querySelectorAll('.card-backdrop').forEach(b => b.remove());
+}
+
+/* ------------------------- Contact form (EmailJS) ------------------------- */
+function initContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+
+    const alertEl = document.getElementById('contact-alert');
+    const resetBtn = document.getElementById('contact-reset');
+
+    // read placeholders for EmailJS config
+    const serviceInput = document.getElementById('emailjs_service_id');
+    const templateInput = document.getElementById('emailjs_template_id');
+    const publicInput = document.getElementById('emailjs_public_key');
+
+    // load EmailJS SDK if not present (lightweight injection)
+    const ensureEmailJS = () => new Promise((resolve, reject) => {
+        if (window.emailjs) return resolve(window.emailjs);
+        const s = document.createElement('script');
+        s.src = 'https://cdn.emailjs.com/dist/email.min.js';
+        s.onload = () => { try { emailjs.init(publicInput?.value || ''); } catch(e){}; resolve(window.emailjs); };
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertEl.hidden = true;
+
+        // Basic validation
+        const name = form.querySelector('[name="from_name"]').value.trim();
+        const reply = form.querySelector('[name="reply_to"]').value.trim();
+        const message = form.querySelector('[name="message"]').value.trim();
+        if (!name || !reply || !message) {
+            alertEl.textContent = 'Please complete name, email and message.';
+            alertEl.hidden = false;
+            return;
+        }
+
+        const serviceId = serviceInput?.value || '';
+        const templateId = templateInput?.value || '';
+        const publicKey = publicInput?.value || '';
+
+        if (!serviceId || !templateId || !publicKey) {
+            alertEl.textContent = 'EmailJS not configured. Please set service/template/public key in the form.';
+            alertEl.hidden = false;
+            return;
+        }
+
+        try {
+            await ensureEmailJS();
+            // initialize with public key (if not already)
+            try { emailjs.init(publicKey); } catch (e) {}
+
+            const templateParams = {
+                from_name: name,
+                reply_to: reply,
+                subject: form.querySelector('[name="subject"]').value || '(no subject)',
+                message: message
+            };
+
+            alertEl.textContent = 'Sending...';
+            alertEl.hidden = false;
+
+            const result = await emailjs.send(serviceId, templateId, templateParams);
+            alertEl.textContent = 'Message sent — thank you!';
+            // optionally clear form
+            form.reset();
+        } catch (err) {
+            console.error('EmailJS send error', err);
+            alertEl.textContent = 'Unable to send message. Try again later.';
+            alertEl.hidden = false;
+        }
+    });
+
+    resetBtn?.addEventListener('click', () => {
+        form.reset();
+        alertEl.hidden = true;
+    });
 }
