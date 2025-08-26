@@ -55,42 +55,76 @@ function initNavigation() {
 // Update active navigation state
 function updateActiveNav(activeLink) {
     const navLinks = document.querySelectorAll('.nav-menu a');
-    
+
+    // Clear existing active states on links and parent <li>
     navLinks.forEach(link => {
         link.classList.remove('active');
+        if (link.parentElement) link.parentElement.classList.remove('active');
     });
-    
-    activeLink.classList.add('active');
+
+    // Allow passing either an Element (link) or a string id
+    if (!activeLink) return;
+    if (typeof activeLink === 'string') {
+        const link = document.querySelector(`.nav-menu a[href="#${activeLink}"]`);
+        if (link) {
+            link.classList.add('active');
+            if (link.parentElement) link.parentElement.classList.add('active');
+        }
+        return;
+    }
+
+    // If an element was passed, mark it and its parent <li>
+    if (activeLink instanceof Element) {
+        activeLink.classList.add('active');
+        if (activeLink.parentElement) activeLink.parentElement.classList.add('active');
+    }
 }
 
 // Update navigation based on scroll position
 function updateNavOnScroll() {
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    const scrollPos = window.scrollY + 200; // Offset for better detection
-    
+    // Only consider sections that have a corresponding nav link
+    const allSections = Array.from(document.querySelectorAll('section[id]'));
+    const navLinks = Array.from(document.querySelectorAll('.nav-menu a'));
+    const linkedSections = allSections.filter(sec => {
+        return document.querySelector(`.nav-menu a[href="#${sec.id}"]`);
+    });
+
+    const scrollPos = window.scrollY + Math.max(150, window.innerHeight * 0.2); // adaptive offset
+
     let current = '';
-    
-    sections.forEach(section => {
+
+    linkedSections.forEach(section => {
         const sectionTop = section.offsetTop;
         const sectionHeight = section.offsetHeight;
         const sectionId = section.getAttribute('id');
-        
+
         if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
             current = sectionId;
         }
     });
-    
+
     // If we're at the very top, default to hero
     if (window.scrollY < 100) {
         current = 'hero';
     }
-    
+
+    // If we're near the bottom of the page, pick the last linked section
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+        const lastLink = navLinks[navLinks.length - 1];
+        if (lastLink) {
+            updateActiveNav(lastLink);
+            return;
+        }
+    }
+
+    // Apply active class to the matching link + its parent <li>
     navLinks.forEach(link => {
         link.classList.remove('active');
+        if (link.parentElement) link.parentElement.classList.remove('active');
         const linkHref = link.getAttribute('href').substring(1);
         if (linkHref === current) {
             link.classList.add('active');
+            if (link.parentElement) link.parentElement.classList.add('active');
         }
     });
 }
