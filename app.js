@@ -11,8 +11,78 @@ document.addEventListener('DOMContentLoaded', () => {
     initAutoHideSidebar();
     initProjectVideoHandlers();
     initContactForm();
-    // No more initFancyProjectsScroll();
+    initProjectsScrollLock();
 });
+// Scroll-jack the projects section: vertical scroll drives horizontal pan of cards, lock until last card
+function initProjectsScrollLock() {
+    const section = document.getElementById('projects');
+    const container = section?.querySelector('.fancy-projects-scroll');
+    if (!section || !container) return;
+    const cards = Array.from(container.querySelectorAll('.project-card'));
+    if (cards.length !== 3) return;
+
+    // Set up a tall spacer to allow enough scroll
+    const scrollHeight = window.innerHeight * 2.2; // enough for 3 cards
+    section.style.position = 'relative';
+    section.style.overflow = 'hidden';
+    section.style.minHeight = scrollHeight + 'px';
+
+    // Track scroll progress within the section
+    function getProgress() {
+        const rect = section.getBoundingClientRect();
+        const winH = window.innerHeight;
+        const total = section.offsetHeight - winH;
+        if (total <= 0) return 0;
+        const scrolled = Math.min(Math.max(-rect.top, 0), total);
+        return scrolled / total;
+    }
+
+    // Animate cards based on progress (0 to 1)
+    function updateCards(progress) {
+        // progress: 0-0.5 = card 1 to card 2, 0.5-1 = card 2 to card 3
+        // Card 0: 0 to 0.5, Card 1: 0.25 to 0.75, Card 2: 0.5 to 1
+        const offsets = [0, 0.5, 1];
+        const width = container.offsetWidth || 900;
+        cards.forEach((card, i) => {
+            // Each card moves from center (0) to right (width) as progress increases
+            let cardProg = Math.max(0, Math.min(1, (progress - (i * 0.5)) * 2));
+            // Card is centered at cardProg=0, fully off right at cardProg=1
+            let x = (cardProg) * width;
+            // For previous cards, move left
+            if (progress < i * 0.5) x = -width;
+            // For next cards, move right
+            if (progress > (i * 0.5 + 0.5)) x = width;
+            card.style.transform = `translate(-50%, 0) translateX(${x}px)`;
+            card.style.opacity = (cardProg < 1 && cardProg > 0) || (progress >= i * 0.5 && progress <= i * 0.5 + 0.5) ? 1 : 0.2;
+            card.style.zIndex = 10 - i;
+        });
+    }
+
+    // Lock scroll until last card is fully revealed
+    let isLocked = true;
+    let lastScroll = 0;
+    function onScroll(e) {
+        const progress = getProgress();
+        updateCards(progress);
+        // If not at end, lock scroll
+        if (progress < 0.98) {
+            if (!isLocked) {
+                document.body.style.overflow = 'hidden';
+                isLocked = true;
+            }
+        } else {
+            if (isLocked) {
+                document.body.style.overflow = '';
+                isLocked = false;
+            }
+        }
+    }
+
+    // Initial state
+    updateCards(0);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', () => updateCards(getProgress()));
+}
 
 /* ------------------------- Navigation ------------------------- */
 function initNavigation() {
