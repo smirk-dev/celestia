@@ -818,6 +818,27 @@ body {
   pointer-events: none;
 }
 
+/* Moving star knob that follows the active item along the vertical line */
+.nav-menu::after {
+  content: '\2726'; /* Star character */
+  position: absolute;
+  left: calc(var(--nav-padding-left, 80px) - 16px);
+  top: var(--knob-top, 0px);
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b6e0fe;
+  font-size: 20px;
+  filter: drop-shadow(0 0 10px #b6e0fe99);
+  transition: top 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+  z-index: 2;
+  pointer-events: none;
+  opacity: var(--knob-opacity, 0);
+}
+
 /* shorten decorative vertical line so it doesn't overlap large hero circle */
 @media (min-width: 1200px) {
   .nav-menu::before {
@@ -917,17 +938,11 @@ body {
 }
 
 .nav-menu li.active::before {
-  content: '\2726'; /* Star icon */
-  color: #b6e0fe;
-  font-size: 22px;
+  /* per-item star disabled when using the moving knob */
+  content: '';
   width: 18px;
   height: 18px;
-  background: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 18px;
-  filter: drop-shadow(0 0 8px #b6e0fe99);
+  background: transparent;
 }
 
 /* Hover no longer shows the star marker — only the active item displays it */
