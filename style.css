@@ -1343,8 +1343,8 @@ body {
   position: absolute;
   top: 0;
   left: 50%;
-  width: 80vw;
-  max-width: 900px;
+  width: 76vw;
+  max-width: 820px;
   height: 400px;
   background: linear-gradient(120deg, #1a1a1a 60%, #232b3a 100%);
   border-radius: 24px;
@@ -1354,9 +1354,8 @@ body {
   justify-content: center;
   transform: translate(-50%, 0) scale(1);
   opacity: 0;
-  transition: transform 0.7s cubic-bezier(0.77,0,0.18,1), opacity 0.5s cubic-bezier(0.77,0,0.18,1);
+  transition: transform 1.3s cubic-bezier(0.85,0,0.15,1), opacity 0.9s cubic-bezier(0.85,0,0.15,1);
   z-index: 1;
-  /* Remove pointer-events so only scroll controls state */
   pointer-events: none;
 }
 .fancy-projects-scroll .project-card.active {
@@ -1366,12 +1365,14 @@ body {
 }
 .fancy-projects-scroll .project-card.to-left {
   opacity: 0;
-  transform: translate(-120%, 0) scale(0.92) rotate(-6deg);
+  /* add spacing by increasing translateX */
+  transform: translate(-140%, 0) scale(0.92) rotate(-6deg);
   z-index: 2;
 }
 .fancy-projects-scroll .project-card.to-right {
   opacity: 0;
-  transform: translate(120%, 0) scale(0.92) rotate(6deg);
+  /* add spacing by increasing translateX */
+  transform: translate(140%, 0) scale(0.92) rotate(6deg);
   z-index: 2;
 }
 .project-card-content {
@@ -1402,11 +1403,18 @@ body {
     height: 340px;
   }
   .fancy-projects-scroll .project-card {
-    width: 96vw;
-    max-width: 99vw;
+    width: 94vw;
+    max-width: 98vw;
     height: 300px;
     border-radius: 16px;
     padding: 0;
+    transition: transform 1s cubic-bezier(0.85,0,0.15,1), opacity 0.7s cubic-bezier(0.85,0,0.15,1);
+  }
+  .fancy-projects-scroll .project-card.to-left {
+    transform: translate(-120%, 0) scale(0.92) rotate(-6deg);
+  }
+  .fancy-projects-scroll .project-card.to-right {
+    transform: translate(120%, 0) scale(0.92) rotate(6deg);
   }
   .project-card-content {
     padding: 24px 12px 24px 12px;
