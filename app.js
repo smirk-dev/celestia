@@ -57,7 +57,7 @@ function setupSectionObserver() {
     const options = {
         root: null,
         rootMargin: '0px 0px -50% 0px',
-        threshold: [0, 0.25, 0.5, 0.75, 1]
+    threshold: [0, 0.05, 0.1, 0.25, 0.5, 0.75, 1]
     };
 
     const observedSections = Array.from(document.querySelectorAll('section[id]'))
@@ -66,21 +66,36 @@ function setupSectionObserver() {
     if (!observedSections.length) return;
 
     const observer = new IntersectionObserver((entries) => {
-        // Pick the intersecting entry with the largest intersectionRatio
-        const visible = entries
-            .filter(e => e.isIntersecting)
-            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        // Update stored ratios for entries we received
+        entries.forEach(e => {
+            ratioMap.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0);
+        });
 
-        if (visible && visible.target && visible.target.id) {
-            setActiveNavById(visible.target.id);
-            return;
+        // Find the section id with the highest recorded ratio
+        let bestId = null;
+        let bestRatio = 0;
+        for (const [id, ratio] of ratioMap.entries()) {
+            if (ratio > bestRatio) {
+                bestRatio = ratio;
+                bestId = id;
+            }
         }
 
-        // If none are intersecting, clear the active state
-        clearActiveNav();
+        // Require a small minimum ratio to avoid flicker when barely visible
+        const MIN_RATIO = 0.12;
+        if (bestId && bestRatio >= MIN_RATIO) {
+            setActiveNavById(bestId);
+        } else {
+            clearActiveNav();
+        }
     }, options);
 
-    observedSections.forEach(sec => observer.observe(sec));
+    // Keep a map of latest intersection ratios for all observed sections
+    const ratioMap = new Map();
+    observedSections.forEach(sec => {
+        ratioMap.set(sec.id, 0);
+        observer.observe(sec);
+    });
 
     // Ensure initial active state matches what's in view (use center heuristic)
     const initial = observedSections.find(sec => {
