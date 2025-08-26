@@ -804,7 +804,8 @@ body {
 .nav-menu::before {
   content: '';
   position: absolute;
-  left: 64px; /* aligns with item markers */
+  /* align with the marker area using the nav padding variable */
+  left: calc(var(--nav-padding-left, 80px) - 16px);
   top: 0;
   bottom: 0;
   width: 2.5px;
@@ -812,6 +813,7 @@ body {
   border-radius: 2px;
   z-index: 0;
   box-shadow: 0 0 12px #b6e0fe44;
+  pointer-events: none;
 }
 
 /* shorten decorative vertical line so it doesn't overlap large hero circle */
@@ -856,6 +858,7 @@ body {
 .nav-menu {
   list-style: none;
   padding: 0 0 0 80px;
+  --nav-padding-left: 80px; /* used by .nav-menu::before to align with item markers */
   margin: 0;
   display: flex;
   flex-direction: column;
