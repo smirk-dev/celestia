@@ -1332,21 +1332,18 @@ body {
 
 /* Fancy horizontal scroll project cards */
 .fancy-projects-scroll {
-  display: flex;
-  flex-direction: row;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
+  position: relative;
   width: 100vw;
   max-width: 1100px;
   height: 440px;
   margin: 0 auto;
-  gap: 48px;
-  scrollbar-width: thin;
-  scrollbar-color: #b6e0fe #232b3a;
+  overflow: visible;
 }
 .fancy-projects-scroll .project-card {
-  flex: 0 0 80vw;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 80vw;
   max-width: 820px;
   height: 400px;
   background: linear-gradient(120deg, #1a1a1a 60%, #232b3a 100%);
@@ -1356,9 +1353,9 @@ body {
   align-items: center;
   justify-content: center;
   margin: 0;
-  scroll-snap-align: center;
   opacity: 1;
-  transition: box-shadow 0.4s cubic-bezier(0.85,0,0.15,1);
+  transition: transform 0.7s cubic-bezier(0.85,0,0.15,1), opacity 0.5s cubic-bezier(0.85,0,0.15,1);
+  z-index: 1;
 }
 .project-card-content {
   color: #fff;
@@ -1386,10 +1383,9 @@ body {
 @media (max-width: 900px) {
   .fancy-projects-scroll {
     height: 340px;
-    gap: 24px;
   }
   .fancy-projects-scroll .project-card {
-    flex: 0 0 96vw;
+    width: 96vw;
     max-width: 99vw;
     height: 300px;
     border-radius: 16px;
