@@ -889,11 +889,8 @@ body {
   .nav-menu a {
     font-size: 1rem;
   }
-}
-
-
-/* Remove special HOME and active styles, unify all nav items */
-  color: #b6e0fe;
+  /* Removed HOME-specific override to keep nav items consistent */
+  /* No HOME-specific sizing — inherits .nav-menu a */
   text-shadow: 0 0 8px #b6e0fe99;
   z-index: 2;
 }
@@ -922,11 +919,14 @@ body {
 
 /* HOME nav item larger */
 .nav-menu li:first-child a {
-  font-size: 2.5rem;
-  letter-spacing: 0.18em;
-  color: #e6e6e6;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  opacity: 0.85;
+  letter-spacing: 0.04em;
+  transition: color var(--duration-fast) var(--ease-standard), opacity var(--duration-fast) var(--ease-standard),
+    font-size 0.2s cubic-bezier(0.4,0,0.2,1), font-weight 0.2s cubic-bezier(0.4,0,0.2,1),
+    text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
 }
 
 /* Other nav items faded */
