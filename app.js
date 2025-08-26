@@ -22,35 +22,24 @@ function initProjectsScrollLock() {
     if (cards.length !== 3) return;
 
     // Set up a tall spacer to allow enough scroll
-    const scrollHeight = window.innerHeight * 2.2; // enough for 3 cards
+    const scrollHeight = window.innerHeight * 2.2;
     section.style.position = 'relative';
     section.style.overflow = 'hidden';
     section.style.minHeight = scrollHeight + 'px';
 
-    // Track scroll progress within the section
-    function getProgress() {
-        const rect = section.getBoundingClientRect();
-        const winH = window.innerHeight;
-        const total = section.offsetHeight - winH;
-        if (total <= 0) return 0;
-        const scrolled = Math.min(Math.max(-rect.top, 0), total);
-        return scrolled / total;
-    }
+    // Virtual scroll state
+    let virtualScroll = 0; // 0 to 1
+    let isLocked = false;
+    let lastScrollY = window.scrollY;
+    let lastBodyOverflow = '';
 
     // Animate cards based on progress (0 to 1)
     function updateCards(progress) {
-        // progress: 0-0.5 = card 1 to card 2, 0.5-1 = card 2 to card 3
-        // Card 0: 0 to 0.5, Card 1: 0.25 to 0.75, Card 2: 0.5 to 1
-        const offsets = [0, 0.5, 1];
         const width = container.offsetWidth || 900;
         cards.forEach((card, i) => {
-            // Each card moves from center (0) to right (width) as progress increases
             let cardProg = Math.max(0, Math.min(1, (progress - (i * 0.5)) * 2));
-            // Card is centered at cardProg=0, fully off right at cardProg=1
             let x = (cardProg) * width;
-            // For previous cards, move left
             if (progress < i * 0.5) x = -width;
-            // For next cards, move right
             if (progress > (i * 0.5 + 0.5)) x = width;
             card.style.transform = `translate(-50%, 0) translateX(${x}px)`;
             card.style.opacity = (cardProg < 1 && cardProg > 0) || (progress >= i * 0.5 && progress <= i * 0.5 + 0.5) ? 1 : 0.2;
@@ -58,30 +47,96 @@ function initProjectsScrollLock() {
         });
     }
 
-    // Lock scroll until last card is fully revealed
-    let isLocked = true;
-    let lastScroll = 0;
-    function onScroll(e) {
-        const progress = getProgress();
-        updateCards(progress);
-        // If not at end, lock scroll
-        if (progress < 0.98) {
-            if (!isLocked) {
-                document.body.style.overflow = 'hidden';
-                isLocked = true;
+    // Helper: is section in viewport?
+    function sectionInView() {
+        const rect = section.getBoundingClientRect();
+        return rect.top <= 0 && rect.bottom > window.innerHeight * 0.5;
+    }
+
+    // Lock scroll and set up event listeners
+    function lockScroll() {
+        if (isLocked) return;
+        lastBodyOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        isLocked = true;
+        window.addEventListener('wheel', onWheel, { passive: false });
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('keydown', onKeyDown, { passive: false });
+    }
+    function unlockScroll() {
+        if (!isLocked) return;
+        document.body.style.overflow = lastBodyOverflow;
+        isLocked = false;
+        window.removeEventListener('wheel', onWheel);
+        window.removeEventListener('touchmove', onTouchMove);
+        window.removeEventListener('keydown', onKeyDown);
+    }
+
+    // Wheel event: map deltaY to virtualScroll
+    function onWheel(e) {
+        e.preventDefault();
+        const delta = e.deltaY || e.detail || 0;
+        virtualScroll = Math.max(0, Math.min(1, virtualScroll + delta / 1200));
+        updateCards(virtualScroll);
+        // Unlock only if at end and user scrolls further
+        if (virtualScroll >= 0.99 && delta > 0) {
+            unlockScroll();
+            // Scroll page down a bit to continue
+            setTimeout(() => window.scrollTo({ top: section.offsetTop + section.offsetHeight - window.innerHeight + 2, behavior: 'auto' }), 10);
+        }
+    }
+    // Touch event: map touchmove to virtualScroll
+    let lastTouchY = null;
+    function onTouchMove(e) {
+        if (e.touches.length !== 1) return;
+        e.preventDefault();
+        const y = e.touches[0].clientY;
+        if (lastTouchY !== null) {
+            const delta = lastTouchY - y;
+            virtualScroll = Math.max(0, Math.min(1, virtualScroll + delta / 800));
+            updateCards(virtualScroll);
+            if (virtualScroll >= 0.99 && delta > 0) {
+                unlockScroll();
+                setTimeout(() => window.scrollTo({ top: section.offsetTop + section.offsetHeight - window.innerHeight + 2, behavior: 'auto' }), 10);
             }
-        } else {
-            if (isLocked) {
-                document.body.style.overflow = '';
-                isLocked = false;
+        }
+        lastTouchY = y;
+    }
+    window.addEventListener('touchend', () => { lastTouchY = null; });
+
+    // Keyboard navigation (optional)
+    function onKeyDown(e) {
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+            virtualScroll = Math.min(1, virtualScroll + 0.08);
+            updateCards(virtualScroll);
+            if (virtualScroll >= 0.99) {
+                unlockScroll();
+                setTimeout(() => window.scrollTo({ top: section.offsetTop + section.offsetHeight - window.innerHeight + 2, behavior: 'auto' }), 10);
             }
+            e.preventDefault();
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+            virtualScroll = Math.max(0, virtualScroll - 0.08);
+            updateCards(virtualScroll);
+            e.preventDefault();
+        }
+    }
+
+    // Main scroll handler: lock/unlock as needed
+    function onMainScroll() {
+        if (sectionInView() && !isLocked) {
+            // Snap scroll to section top
+            window.scrollTo({ top: section.offsetTop, behavior: 'auto' });
+            lockScroll();
+            updateCards(virtualScroll);
+        } else if (!sectionInView() && isLocked) {
+            unlockScroll();
         }
     }
 
     // Initial state
     updateCards(0);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', () => updateCards(getProgress()));
+    window.addEventListener('scroll', onMainScroll, { passive: false });
+    window.addEventListener('resize', () => updateCards(virtualScroll));
 }
 
 /* ------------------------- Navigation ------------------------- */
