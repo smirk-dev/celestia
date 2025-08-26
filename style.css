@@ -854,15 +854,9 @@ body {
   z-index: 1;
 }
 
-/* Main content offset so it sits to the right of the fixed sidebar */
+/* Main content - reset so hero centers under the header area (no forced offset) */
 .main-content {
-  margin-left: 360px; /* sidebar (320px) + comfortable gutter */
-  transition: margin-left 200ms var(--ease-standard);
-}
-
-/* left column content spacing so title clears the sidebar visually */
-.hero-content > :first-child {
-  padding-left: 24px;
+  margin-left: 0;
 }
 
 
@@ -971,30 +965,24 @@ body {
   text-shadow: 0 2px 12px rgba(50,184,198,0.18);
 }
 
-/* Hero Section */
+/* Hero Section (restored to original centered layout) */
 .hero-section {
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #000000 0%, #0b0b0b 100%);
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
   position: relative;
-  overflow: visible;
 }
 
 .hero-content {
-  width: 100%;
-  max-width: 1400px;
-  display: grid;
-  /* left column holds title/content, right column holds the hero; keep right column capped */
-  grid-template-columns: 1fr minmax(240px, 46vw);
-  align-items: center;
-  gap: 48px;
+  text-align: center;
+  max-width: 800px;
   padding: var(--space-32);
 }
 
 .hero-logo {
-  margin-bottom: 0;
+  margin-bottom: var(--space-24);
 }
 
 .hero-logo-icon {
@@ -1007,47 +995,36 @@ body {
   font-size: 4rem;
   font-weight: var(--font-weight-bold);
   letter-spacing: 4px;
-  margin-bottom: 0;
+  margin-bottom: var(--space-32);
   background: linear-gradient(45deg, #ffffff, var(--color-primary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-align: left;
-  /* keep title anchored left column and away from the circle */
-  grid-column: 1 / 2;
-  padding-right: 24px;
-  justify-self: start;
 }
 
 .hero-3d-placeholder {
-  /* responsive circular container: slightly reduced and adaptive */
-  width: clamp(220px, 36vw, 520px);
-  aspect-ratio: 1 / 1; /* keeps perfect circle */
-  background: transparent;
-  border: 3px solid rgba(182,224,254,0.12);
-  border-radius: 50%;
+  width: 400px;
+  height: 300px;
+  background: var(--color-bg-1);
+  border: 2px solid rgba(var(--color-teal-300-rgb), 0.3);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto; /* center inside its grid column */
-  grid-column: 2 / 3;
-  overflow: hidden;
+  margin: var(--space-32) auto;
   transition: all var(--duration-normal) var(--ease-standard);
-  box-shadow: 0 20px 60px rgba(33,128,141,0.12), inset 0 0 30px rgba(182,224,254,0.02);
-  z-index: 2;
 }
 
 .hero-3d-placeholder:hover {
   border-color: rgba(var(--color-teal-300-rgb), 0.6);
-  box-shadow: 0 30px 80px rgba(33,128,141,0.22);
-  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(var(--color-teal-300-rgb), 0.2);
 }
 
 /* Video inside hero placeholder */
 .hero-video {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: var(--radius-lg);
   object-fit: cover;
   display: block;
 }
