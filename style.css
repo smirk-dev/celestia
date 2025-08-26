@@ -1322,14 +1322,19 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
 @media (min-width: 1025px) {
   .hero-section {
     /* maintain left offset for sidebar clearance */
-    padding-left: 360px;
+  padding-left: 0; /* remove forced offset so we can center content with gutters */
     position: relative;
   }
 
   .hero-content {
-    /* avoid constraining width so absolute circle can sit outside the content column */
+    /* center content between equal gutters (left reserved for sidebar) */
     max-width: none;
-    padding-right: 200px; /* give room on the right for the absolute circle */
+    padding: var(--space-32);
+    margin: 0 360px; /* create equal left/right gutters so content is centered */
+    display: grid;
+    grid-template-columns: 1fr clamp(260px, 52vw, 900px);
+    gap: var(--space-32);
+    align-items: center;
   }
 
   .hero-3d-placeholder {
@@ -1342,7 +1347,7 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
   height: clamp(420px, 72vh, 900px);
   max-height: 820px;
   overflow: hidden;
-  transform: rotate(-30deg); /* tilt the hero by ~30 degrees */
+  transform: rotate(30deg) scale(1.6); /* tilt and increase size by 60% */
   transform-origin: center center;
   }
 
