@@ -1003,28 +1003,31 @@ body {
 }
 
 .hero-3d-placeholder {
-  width: 400px;
-  height: 300px;
-  background: var(--color-bg-1);
-  border: 2px solid rgba(var(--color-teal-300-rgb), 0.3);
-  border-radius: var(--radius-lg);
+  /* circular hero for homepage: responsive, no border to merge with black background */
+  width: clamp(260px, 40vw, 520px);
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  border: none !important;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: var(--space-32) auto;
   transition: all var(--duration-normal) var(--ease-standard);
+  box-shadow: none !important;
+  overflow: hidden;
 }
 
 .hero-3d-placeholder:hover {
-  border-color: rgba(var(--color-teal-300-rgb), 0.6);
-  box-shadow: 0 10px 30px rgba(var(--color-teal-300-rgb), 0.2);
+  /* keep hover subtle but without border so it stays seamless */
+  transform: translateY(-2px);
 }
 
 /* Video inside hero placeholder */
 .hero-video {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-lg);
+  border-radius: 50%;
   object-fit: cover;
   display: block;
 }
