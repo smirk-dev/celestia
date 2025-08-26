@@ -1303,3 +1303,30 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
   background: transparent !important;
   border-color: rgba(255,255,255,0.06) !important;
 }
+
+/* Desktop: pin the circular hero to the right side so it sits visually right of the title */
+@media (min-width: 1025px) {
+  .hero-section {
+    /* maintain left offset for sidebar clearance */
+    padding-left: 360px;
+    position: relative;
+  }
+
+  .hero-content {
+    /* avoid constraining width so absolute circle can sit outside the content column */
+    max-width: none;
+    padding-right: 200px; /* give room on the right for the absolute circle */
+  }
+
+  .hero-3d-placeholder {
+  /* use fixed positioning so the circle stays visually on the right and vertically offset from the top */
+  position: fixed;
+  right: 6vw; /* push the circle towards the right edge of the viewport */
+  top: 18vh; /* lower the circle so it doesn't sit under the header */
+  transform: none;
+  justify-self: unset;
+  margin: 0;
+  z-index: 1200;
+  width: clamp(300px, 36vw, 520px); /* slightly larger on very large viewports */
+  }
+}
