@@ -44,12 +44,41 @@ function initNavigation() {
     });
     
     // Handle scroll-based active navigation
-    window.addEventListener('scroll', throttle(updateNavOnScroll, 100));
-    
-    // Set initial active state
-    setTimeout(() => {
-        updateNavOnScroll();
-    }, 100);
+    // Use IntersectionObserver to reliably update the active nav item
+    initNavObserver();
+}
+
+// Use IntersectionObserver to mark the nav link corresponding to the section
+function initNavObserver() {
+    const options = {
+        root: null,
+        rootMargin: '0px 0px -40% 0px', // trigger when section crosses 60% of viewport
+        threshold: [0.2, 0.4, 0.6]
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        // Find the entry with highest intersectionRatio that's intersecting
+        let visible = entries
+            .filter(e => e.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible && visible.target && visible.target.id) {
+            updateActiveNav(visible.target.id);
+        }
+    }, options);
+
+    // Observe only sections which have matching nav links
+    const sections = Array.from(document.querySelectorAll('section[id]'))
+        .filter(sec => document.querySelector(`.nav-menu a[href="#${sec.id}"]`));
+
+    sections.forEach(sec => observer.observe(sec));
+
+    // Set initial active based on current viewport
+    const currentlyVisible = sections.find(sec => {
+        const rect = sec.getBoundingClientRect();
+        return rect.top <= window.innerHeight * 0.5 && rect.bottom >= window.innerHeight * 0.25;
+    });
+    if (currentlyVisible) updateActiveNav(currentlyVisible.id);
 }
 
 // Update active navigation state
