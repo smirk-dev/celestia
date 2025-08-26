@@ -881,8 +881,7 @@ body {
   transition: all 0.2s;
 }
 
-.nav-menu li.active::before,
-.nav-menu li:hover::before {
+.nav-menu li.active::before {
   content: '\2726'; /* Star icon */
   color: #b6e0fe;
   font-size: 22px;
@@ -956,8 +955,7 @@ body {
     text-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
 }
 
-.nav-menu a.active,
-.nav-menu a:hover {
+.nav-menu a.active {
   color: var(--color-primary);
   opacity: 1;
   font-size: var(--font-size-xl);
@@ -1018,10 +1016,7 @@ body {
   overflow: hidden;
 }
 
-.hero-3d-placeholder:hover {
-  /* keep hover subtle but without border so it stays seamless */
-  transform: translateY(-2px);
-}
+
 
 /* Video inside hero placeholder */
 .hero-video {
