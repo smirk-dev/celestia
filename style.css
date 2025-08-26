@@ -846,6 +846,12 @@ body {
   z-index: 1;
 }
 
+/* Main content offset so it sits to the right of the fixed sidebar */
+.main-content {
+  margin-left: 360px; /* sidebar (320px) + comfortable gutter */
+  transition: margin-left 200ms var(--ease-standard);
+}
+
 
 .nav-menu li {
   width: 100%;
@@ -967,7 +973,7 @@ body {
   width: 100%;
   max-width: 1200px;
   display: grid;
-  grid-template-columns: 1fr 500px; /* left: title, right: circular hero */
+  grid-template-columns: 1fr 640px; /* left: title, right: circular hero */
   align-items: center;
   gap: 48px;
   padding: var(--space-32);
@@ -993,8 +999,9 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-align: left;
-  /* nudge the title slightly toward center-left */
-  margin-left: 40px;
+  /* keep title anchored left column and away from the circle */
+  grid-column: 1 / 2;
+  padding-right: 24px;
 }
 
 .hero-3d-placeholder {
@@ -1006,7 +1013,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
+  margin: 0 auto; /* center inside its grid column */
+  grid-column: 2 / 3;
   overflow: hidden;
   transition: all var(--duration-normal) var(--ease-standard);
   box-shadow: 0 20px 60px rgba(33,128,141,0.12), inset 0 0 30px rgba(182,224,254,0.02);
