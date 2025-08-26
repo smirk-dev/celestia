@@ -1202,6 +1202,10 @@ body {
     width: 520px;
     height: 520px;
   }
+    /* reduce main offset on smaller screens */
+    .main-content {
+      margin-left: 220px;
+    }
 }
 
 @media (max-width: 900px) {
@@ -1236,6 +1240,12 @@ body {
     height: 360px;
     margin: 0 auto;
   }
+    /* stack and remove main offset on narrow screens */
+    .main-content {
+      margin-left: 0;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
     
   .about-content {
     grid-template-columns: 1fr;
