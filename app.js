@@ -692,6 +692,214 @@ function initProjectCards() {
     });
 }
 
+// ===== PROJECT CARD INTERACTION FUNCTIONS =====
+
+function toggleProjectCard(card) {
+    if (card.classList.contains('is-open')) {
+        closeProjectCard(card);
+    } else {
+        openProjectCard(card);
+    }
+}
+
+function openProjectCard(card) {
+    // Close any other open cards first
+    closeAllProjectCards();
+    
+    // Open the selected card
+    card.classList.add('is-open');
+    card.setAttribute('aria-expanded', 'true');
+    
+    // Create backdrop
+    createProjectBackdrop();
+    
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+    
+    // Focus management
+    card.focus();
+}
+
+function closeProjectCard(card) {
+    card.classList.remove('is-open');
+    card.setAttribute('aria-expanded', 'false');
+    
+    // Remove backdrop if no cards are open
+    if (document.querySelectorAll('.project-card.is-open').length === 0) {
+        removeProjectBackdrop();
+        document.body.style.overflow = '';
+    }
+}
+
+function closeAllProjectCards() {
+    const openCards = document.querySelectorAll('.project-card.is-open');
+    openCards.forEach(card => {
+        closeProjectCard(card);
+    });
+}
+
+function createProjectBackdrop() {
+    if (!document.querySelector('.project-backdrop')) {
+        const backdrop = document.createElement('div');
+        backdrop.className = 'project-backdrop';
+        document.body.appendChild(backdrop);
+        
+        // Animate in
+        requestAnimationFrame(() => {
+            backdrop.classList.add('active');
+        });
+    }
+}
+
+function removeProjectBackdrop() {
+    const backdrop = document.querySelector('.project-backdrop');
+    if (backdrop) {
+        backdrop.classList.remove('active');
+        setTimeout(() => {
+            backdrop.remove();
+        }, 600);
+    }
+}
+
+function enhanceHoverEffects(card) {
+    // Add floating particles for holographic cards
+    if (card.classList.contains('holographic')) {
+        addHolographicParticles(card);
+    }
+    
+    // Enhance quantum effects
+    if (card.classList.contains('quantum')) {
+        enhanceQuantumEffects(card);
+    }
+    
+    // Enhance neural effects
+    if (card.classList.contains('neural')) {
+        enhanceNeuralEffects(card);
+    }
+    
+    // Add enhanced glow effects
+    card.style.setProperty('--enhanced-glow', '1');
+}
+
+function resetHoverEffects(card) {
+    // Remove floating particles
+    const particles = card.querySelectorAll('.floating-particle');
+    particles.forEach(particle => particle.remove());
+    
+    // Reset glow effects
+    card.style.setProperty('--enhanced-glow', '0');
+}
+
+function addHolographicParticles(card) {
+    for (let i = 0; i < 5; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'floating-particle';
+        particle.style.cssText = `
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(50,184,198,0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatParticle 3s ease-in-out infinite;
+            animation-delay: ${i * 0.2}s;
+            left: ${20 + i * 15}%;
+            top: ${30 + i * 10}%;
+        `;
+        card.appendChild(particle);
+    }
+}
+
+function enhanceQuantumEffects(card) {
+    const orbitals = card.querySelectorAll('.orbital');
+    orbitals.forEach(orbital => {
+        orbital.style.filter = 'drop-shadow(0 0 25px rgba(50,184,198,0.6))';
+    });
+}
+
+function enhanceNeuralEffects(card) {
+    const neurons = card.querySelectorAll('.neuron');
+    neurons.forEach(neuron => {
+        neuron.style.boxShadow = '0 0 25px rgba(50,184,198,0.9)';
+    });
+}
+
+function triggerCardAnimations(card) {
+    // Stagger entrance animations for internal elements
+    const elements = card.querySelectorAll('.hologram-layer, .orbital, .neuron, .tech-tag');
+    elements.forEach((element, index) => {
+        element.style.animationDelay = `${index * 0.1}s`;
+    });
+}
+
+function trackMousePosition(card, e) {
+    const rect = card.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Calculate mouse position relative to card center
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+
+    // Normalize to -1 to 1 range
+    const normalizedX = (mouseX / (rect.width / 2)) * 0.5;
+    const normalizedY = (mouseY / (rect.height / 2)) * 0.5;
+
+    // Update CSS custom properties for magnetic effect
+    card.style.setProperty('--mouse-x', normalizedX.toString());
+    card.style.setProperty('--mouse-y', normalizedY.toString());
+}
+
+// ===== DYNAMIC CSS ANIMATIONS =====
+
+function addProjectCardAnimations() {
+    // Create style element for dynamic animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes projectExpand {
+            0% { transform: scale(0.8) rotateY(15deg); opacity: 0; }
+            100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+        }
+        
+        @keyframes overlayReveal {
+            0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes floatParticle {
+            0%, 100% { 
+                transform: translateY(0px) scale(1);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translateY(-15px) scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        .project-card.is-open .card-overlay {
+            animation: overlayReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+        
+        .project-card.is-open .overlay-content > * {
+            animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation-delay: calc(var(--animation-index, 0) * 0.1s);
+        }
+        
+        .overlay-content h3 { --animation-index: 0; }
+        .overlay-content p { --animation-index: 1; }
+        .project-details { --animation-index: 2; }
+        .project-links { --animation-index: 3; }
+    `;
+    
+    document.head.appendChild(style);
+}
+
 /* ------------------------- Contact form (EmailJS) ------------------------- */
 function initContactForm() {
     const form = document.getElementById('contact-form');
