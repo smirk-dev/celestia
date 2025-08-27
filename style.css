@@ -1270,6 +1270,7 @@ body {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    font-family: 'Fontspring-DEMO-proximanovacond-regular', var(--font-family-base);
 }
 
 .services-grid {
