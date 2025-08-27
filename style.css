@@ -1346,6 +1346,8 @@ body {
 
 .service-modal__video {
   display: block;
+  position: relative;
+  z-index: 1;
   width: auto;
   height: auto;
   max-width: 92vw;
@@ -1364,6 +1366,7 @@ body {
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
+  z-index: 2;
 }
 
 .service-card.is-open .service-video {
