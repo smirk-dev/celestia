@@ -813,6 +813,11 @@ select.form-control {
     box-sizing: border-box;
 }
 
+/* Utility font class for Fontspring Proxima Nova Condensed Regular */
+.font-proxima-cond {
+  font-family: 'Fontspring-DEMO-proximanovacond-regular', var(--font-family-base);
+}
+
 html {
     scroll-behavior: smooth;
 }
