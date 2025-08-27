@@ -1270,7 +1270,7 @@ body {
   height: 0;
   padding-bottom: 62.5%; /* larger, ~16:10 aspect */
   background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.14);
   cursor: pointer;
   overflow: hidden;
   transition: transform 240ms var(--ease-standard), box-shadow 240ms var(--ease-standard);
@@ -1309,6 +1309,7 @@ body {
   transform: translate(-50%, -50%);
   padding: 0;
   border-radius: 12px;
+  border-width: 2px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   transition: all 380ms cubic-bezier(0.16, 1, 0.3, 1);
   animation: projectExpand 380ms cubic-bezier(0.16, 1, 0.3, 1);
