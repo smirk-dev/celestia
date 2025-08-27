@@ -513,7 +513,184 @@ function removeProjectBackdrop() {
     document.querySelectorAll('.card-backdrop').forEach(b => b.remove());
 }
 
-// FancyProjectsScroll logic removed: now handled by native horizontal scroll snap
+/* ===== INNOVATIVE PROJECT CARDS FUNCTIONALITY ===== */
+function initProjectCards() {
+    const projectCards = document.querySelectorAll('.project-card');
+    const scrollProgressBar = document.querySelector('.scroll-progress-fill');
+    const scrollDirectionIndicator = document.querySelector('.scroll-direction');
+    const projectsSection = document.querySelector('#projects');
+    
+    let lastScrollTop = 0;
+    let scrollDirection = 'down';
+    let isScrolling = false;
+    let scrollTimeout;
+
+    // Add ARIA attributes for accessibility
+    projectCards.forEach(card => {
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-expanded', 'false');
+    });
+
+    // Advanced 3D Scroll Animation System
+    function update3DScrollAnimation() {
+        const sectionRect = projectsSection.getBoundingClientRect();
+        const sectionTop = sectionRect.top;
+        const sectionHeight = sectionRect.height;
+        const viewportHeight = window.innerHeight;
+        
+        // Calculate scroll progress through the section (0 to 1)
+        let scrollProgress = 0;
+        
+        if (sectionTop <= 0) {
+            // Section is in view or above
+            scrollProgress = Math.abs(sectionTop) / (sectionHeight - viewportHeight);
+            scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+        }
+        
+        // Update scroll progress bar
+        if (scrollProgressBar) {
+            scrollProgressBar.style.height = `${scrollProgress * 100}%`;
+        }
+        
+        // Determine which card should be active based on scroll position
+        const cardCount = projectCards.length;
+        const activeCardIndex = Math.floor(scrollProgress * cardCount);
+        
+        // Update card states based on scroll position
+        projectCards.forEach((card, index) => {
+            const cardScrollProgress = Math.abs(index - scrollProgress * (cardCount - 1));
+            
+            // Remove all state classes
+            card.classList.remove('active', 'entering', 'exiting', 'hidden');
+            
+            // Determine card state
+            if (index === activeCardIndex) {
+                card.classList.add('active');
+            } else if (index === activeCardIndex - 1 || index === activeCardIndex + 1) {
+                card.classList.add('entering');
+            } else if (index === activeCardIndex - 2 || index === activeCardIndex + 2) {
+                card.classList.add('exiting');
+            } else {
+                card.classList.add('hidden');
+            }
+            
+            // Update scroll progress for 3D positioning
+            card.style.setProperty('--scroll-progress', cardScrollProgress.toString());
+        });
+        
+        // Update scroll direction indicator
+        if (scrollDirectionIndicator) {
+            scrollDirectionIndicator.textContent = scrollDirection.toUpperCase();
+            scrollDirectionIndicator.className = `scroll-direction ${scrollDirection}`;
+        }
+    }
+    
+    // Enhanced scroll event handler with throttling
+    function handleScroll() {
+        if (!isScrolling) {
+            isScrolling = true;
+            requestAnimationFrame(() => {
+                update3DScrollAnimation();
+                isScrolling = false;
+            });
+        }
+        
+        // Update scroll direction
+        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        scrollDirection = currentScrollTop > lastScrollTop ? 'down' : 'up';
+        lastScrollTop = currentScrollTop;
+        
+        // Clear previous timeout
+        clearTimeout(scrollTimeout);
+        
+        // Update scroll direction indicator after scroll stops
+        scrollTimeout = setTimeout(() => {
+            scrollDirectionIndicator?.classList.remove('up', 'down');
+        }, 150);
+    }
+    
+    // Throttled scroll event
+    let ticking = false;
+    function throttledScroll() {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    
+    // Initial call to set up initial state
+    update3DScrollAnimation();
+    
+    // Click handler for card expansion
+    projectCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleProjectCard(card);
+        });
+        
+        // Keyboard navigation
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleProjectCard(card);
+            } else if (e.key === 'Escape') {
+                closeAllProjectCards();
+            }
+        });
+        
+        // Enhanced hover effects
+        card.addEventListener('mouseenter', () => {
+            enhanceHoverEffects(card);
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            resetHoverEffects(card);
+        });
+        
+        // Mouse tracking for magnetic effect
+        card.addEventListener('mousemove', (e) => {
+            trackMousePosition(card, e);
+        });
+    });
+    
+    // Close cards when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.project-card') && !e.target.closest('.project-backdrop')) {
+            closeAllProjectCards();
+        }
+    });
+    
+    // Close cards on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeAllProjectCards();
+        }
+    });
+    
+    // Intersection Observer for entrance animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                triggerCardAnimations(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    projectCards.forEach(card => observer.observe(card));
+    
+    // Resize handler for responsive adjustments
+    window.addEventListener('resize', () => {
+        update3DScrollAnimation();
+    });
+}
 
 /* ------------------------- Contact form (EmailJS) ------------------------- */
 function initContactForm() {
