@@ -112,7 +112,7 @@
   --color-info-rgb: 98, 108, 113;
 
   /* Typography */
-  --font-family-base: 'Fontspring-DEMO-proximanovacond-regular', 'Cropaso', "FKGroteskNeue", "Geist", "Inter", -apple-system,
+  --font-family-base: 'Cropaso', "FKGroteskNeue", "Geist", "Inter", -apple-system,
     BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
     Monaco, Consolas, monospace;
