@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallaxEffect();
     initHoverEffects();
     initAutoHideSidebar();
-    // initProjectVideoHandlers(); // projects removed
+    initProjectVideoHandlers();
     initContactForm();
+    initProjectCards(); // Initialize project cards
 });
 
 /* ------------------------- Navigation ------------------------- */
