@@ -1217,10 +1217,10 @@ body {
 
 /* Section Title */
 .section-title {
-    font-size: 3rem;
+    font-size: 3.4rem;
     font-weight: var(--font-weight-bold);
     letter-spacing: 2px;
-    margin-bottom: var(--space-32);
+    margin-bottom: var(--space-20);
     text-align: center;
     color: #ffffff;
 }
@@ -1808,9 +1808,7 @@ body {
     padding: var(--space-24);
   }
     
-  .section-title {
-    font-size: 2rem;
-  }
+  .section-title { font-size: 2.2rem; margin-bottom: var(--space-16); }
 }
 
 @media (max-width: 480px) {
@@ -1824,9 +1822,7 @@ body {
     margin: 0 auto;
   }
     
-  .section-title {
-    font-size: 1.8rem;
-  }
+  .section-title { font-size: 2rem; margin-bottom: var(--space-12); }
     
   .nav-logo .logo-text {
     font-size: var(--font-size-lg);
