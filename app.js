@@ -217,6 +217,7 @@ function initServiceCards() {
     cards.forEach((card, i) => {
         card.style.animationDelay = `${i * 0.1}s`;
         const video = card.querySelector('.service-video');
+        const thumb = card.querySelector('.service-thumb');
 
         const loadAndPlay = async () => {
             if (!video) return;

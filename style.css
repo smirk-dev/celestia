@@ -1263,7 +1263,7 @@ body {
 }
 
 .services-description {
-    font-size: 26px;
+    font-size: 24px;
     text-align: center;
     color: rgba(255, 255, 255, 0.8);
     margin-bottom: var(--space-32);
@@ -1305,6 +1305,17 @@ body {
 
 /* Titles removed for thumbnail design */
 
+.service-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  z-index: 2; /* above video */
+  pointer-events: none; /* clicks go to card */
+}
+
 .service-video {
   position: absolute;
   inset: 0;
@@ -1315,6 +1326,11 @@ body {
   pointer-events: none; /* click via card */
   border-radius: 10px;
   background: #000;
+}
+
+/* If a custom thumbnail is provided, hide the inline video preview to show the image */
+.service-thumb[src]:not([src=""]) ~ .service-video {
+  opacity: 0;
 }
 
 /* Open state: click toggles .is-open (JS) */
