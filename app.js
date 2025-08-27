@@ -544,8 +544,10 @@ function initProjectCards() {
         let scrollProgress = 0;
         
         if (sectionTop <= viewportHeight && sectionTop > -sectionHeight) {
-            // Section is in view - calculate progress
-            scrollProgress = (viewportHeight - sectionTop) / (sectionHeight + viewportHeight);
+            // Calculate progress with offset to keep cards in view longer
+            const effectiveProgress = (viewportHeight - sectionTop) / sectionHeight;
+            // Use a slower curve for the middle portion of the scroll
+            scrollProgress = Math.pow(effectiveProgress * 0.7, 1.2); // Slower progression
             scrollProgress = Math.max(0, Math.min(1, scrollProgress));
         } else if (sectionTop <= -sectionHeight) {
             scrollProgress = 1;
@@ -556,8 +558,8 @@ function initProjectCards() {
             scrollProgressBar.style.height = `${scrollProgress * 100}%`;
         }
         
-        // Total rotation for the carousel (180 degrees for semi-circle)
-        const totalRotation = 180;
+        // Total rotation for the carousel (120 degrees for tighter semi-circle)
+        const totalRotation = 120; // Reduced from 180 to keep cards more visible
         const cardCount = projectCards.length;
         const angleStep = totalRotation / (cardCount - 1); // Angle between cards
         
@@ -571,12 +573,12 @@ function initProjectCards() {
             const cardAngleRad = (cardAngle * Math.PI) / 180;
             
             // Radius of the semi-circular path
-            const radius = 600;
+            const radius = 500; // Slightly smaller radius for better visibility
             
             // Calculate position on the semi-circle
             const xPos = radius * Math.sin(cardAngleRad);
             const zPos = radius * Math.cos(cardAngleRad) - radius; // Offset to center
-            const yPos = 0; // Keep cards at same height
+            const yPos = 50; // Slight downward offset to position below title
             
             // Calculate scale based on z-position (cards further back are smaller)
             const scale = 0.5 + (0.5 * ((zPos + radius) / radius));
@@ -584,8 +586,8 @@ function initProjectCards() {
             // Calculate opacity based on angle (cards at edges fade out)
             let opacity = 1;
             const angleDiff = Math.abs(cardAngle);
-            if (angleDiff > 90) {
-                opacity = Math.max(0, 1 - ((angleDiff - 90) / 90));
+            if (angleDiff > 60) { // Start fading earlier
+                opacity = Math.max(0.3, 1 - ((angleDiff - 60) / 60)); // Keep minimum opacity higher
             }
             
             // Apply blur for depth effect
