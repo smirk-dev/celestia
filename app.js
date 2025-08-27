@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallaxEffect();
     initHoverEffects();
     initAutoHideSidebar();
-    initProjectVideoHandlers();
+    // initProjectVideoHandlers(); // projects removed
     initContactForm();
 });
 
