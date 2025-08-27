@@ -542,10 +542,12 @@ function initProjectCards() {
         // Calculate scroll progress through the section (0 to 1)
         let scrollProgress = 0;
         
-        if (sectionTop <= 0) {
-            // Section is in view or above
-            scrollProgress = Math.abs(sectionTop) / (sectionHeight - viewportHeight);
+        if (sectionTop <= viewportHeight && sectionTop > -sectionHeight) {
+            // Section is in view - calculate progress
+            scrollProgress = (viewportHeight - sectionTop) / (sectionHeight + viewportHeight);
             scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+        } else if (sectionTop <= -sectionHeight) {
+            scrollProgress = 1;
         }
         
         // Update scroll progress bar
@@ -553,79 +555,68 @@ function initProjectCards() {
             scrollProgressBar.style.height = `${scrollProgress * 100}%`;
         }
         
-        // Determine which card should be active based on scroll position
+        // Total rotation for the carousel (180 degrees for semi-circle)
+        const totalRotation = 180;
         const cardCount = projectCards.length;
-        const activeCardIndex = Math.floor(scrollProgress * cardCount);
+        const angleStep = totalRotation / (cardCount - 1); // Angle between cards
+        
+        // Current rotation based on scroll progress
+        const currentRotation = scrollProgress * totalRotation;
         
         // Update card states based on scroll position
         projectCards.forEach((card, index) => {
-            const cardScrollProgress = Math.abs(index - scrollProgress * (cardCount - 1));
+            // Calculate this card's angle on the semi-circle
+            const cardAngle = index * angleStep - currentRotation;
+            const cardAngleRad = (cardAngle * Math.PI) / 180;
             
-            // Remove all state classes
-            card.classList.remove('active', 'entering', 'exiting', 'hidden');
+            // Radius of the semi-circular path
+            const radius = 600;
             
-            // Determine card state
-            if (index === activeCardIndex) {
-                card.classList.add('active');
-            } else if (index === activeCardIndex - 1 || index === activeCardIndex + 1) {
-                card.classList.add('entering');
-            } else if (index === activeCardIndex - 2 || index === activeCardIndex + 2) {
-                card.classList.add('exiting');
-            } else {
-                card.classList.add('hidden');
-            }
+            // Calculate position on the semi-circle
+            const xPos = radius * Math.sin(cardAngleRad);
+            const zPos = radius * Math.cos(cardAngleRad) - radius; // Offset to center
+            const yPos = 0; // Keep cards at same height
             
-            // Calculate 3D positioning based on card index and scroll progress
-            const arcRadius = 800;
-            const arcAngle = index * 60; // 60 degrees between each card
+            // Calculate scale based on z-position (cards further back are smaller)
+            const scale = 0.5 + (0.5 * ((zPos + radius) / radius));
             
-            // Calculate Z and X positions for semi-circular path
-            const zPos = arcRadius * Math.cos(arcAngle * Math.PI / 180);
-            const xPos = arcRadius * Math.sin(arcAngle * Math.PI / 180);
-            
-            // Apply scroll-based transformations
-            const scrollTransform = `translate(-50%, -50%) translateZ(${zPos}px) translateX(${xPos}px) rotateY(${-arcAngle}deg)`;
-            
-            // Apply scroll progress effects
-            let finalTransform = scrollTransform;
+            // Calculate opacity based on angle (cards at edges fade out)
             let opacity = 1;
-            let filter = 'blur(0px)';
-            let scale = 1;
-            
-            if (card.classList.contains('active')) {
-                // Active card - no additional transforms
-                finalTransform += ' rotateX(0deg) scale(1)';
-            } else if (card.classList.contains('entering')) {
-                // Entering card - slight rotation and scale
-                finalTransform += ' rotateX(15deg) scale(0.8)';
-                opacity = 0.7;
-                filter = 'blur(1px)';
-            } else if (card.classList.contains('exiting')) {
-                // Exiting card - more rotation and scale
-                finalTransform += ' rotateX(25deg) scale(0.6)';
-                opacity = 0.4;
-                filter = 'blur(2px)';
-            } else {
-                // Hidden card - maximum rotation and scale
-                finalTransform += ' rotateX(30deg) scale(0.4)';
-                opacity = 0.2;
-                filter = 'blur(3px)';
+            const angleDiff = Math.abs(cardAngle);
+            if (angleDiff > 90) {
+                opacity = Math.max(0, 1 - ((angleDiff - 90) / 90));
             }
             
-            // Apply the final transform and styles
-            card.style.transform = finalTransform;
+            // Apply blur for depth effect
+            const blur = Math.max(0, (radius - (zPos + radius)) / radius * 3);
+            
+            // Construct the transform
+            const transform = `
+                translate(-50%, -50%)
+                translate3d(${xPos}px, ${yPos}px, ${zPos}px)
+                rotateY(${-cardAngle}deg)
+                scale(${scale})
+            `;
+            
+            // Apply styles
+            card.style.transform = transform;
             card.style.opacity = opacity;
-            card.style.filter = filter;
+            card.style.filter = `blur(${blur}px)`;
+            card.style.zIndex = Math.round((zPos + radius) * 10);
+            
+            // Add/remove active class for the centered card
+            if (Math.abs(cardAngle) < angleStep / 2) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
         });
         
         // Update scroll direction indicator
         if (scrollDirectionIndicator) {
-            scrollDirectionIndicator.textContent = scrollDirection.toUpperCase();
+            scrollDirectionIndicator.textContent = scrollDirection === 'down' ? '↓ SCROLL' : '↑ SCROLL';
             scrollDirectionIndicator.className = `scroll-direction ${scrollDirection}`;
         }
-        
-        // Debug logging
-        console.log('Scroll Progress:', scrollProgress, 'Active Card:', activeCardIndex);
     }
     
     // Enhanced scroll event handler with throttling
