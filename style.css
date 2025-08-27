@@ -898,7 +898,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 40px 0 32px 80px;
+  padding: 40px 0 70px 80px;
   font-size: 2.2rem;
   font-weight: bold;
   letter-spacing: 0.1em;
@@ -909,7 +909,7 @@ body {
 }
 
 .nav-logo img {
-  width: 400px;
+  width: 350px;
   height: auto;
   display: block;
   object-fit: contain;
