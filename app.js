@@ -306,18 +306,16 @@ async function openServiceModal(sourceVideo) {
     const content = document.createElement('div');
     content.className = 'service-modal__content';
 
-    const close = document.createElement('button');
-    close.className = 'service-modal__close';
-    close.type = 'button';
-    close.textContent = 'Close';
-
     const modalVideo = document.createElement('video');
     modalVideo.className = 'service-modal__video';
-    modalVideo.controls = true;
+    modalVideo.controls = false;
     modalVideo.playsInline = true;
-    modalVideo.muted = false;
+    modalVideo.muted = true;
     modalVideo.autoplay = true;
     modalVideo.loop = false;
+    // suppress native controls across browsers
+    try { modalVideo.disablePictureInPicture = true; } catch(e) {}
+    modalVideo.setAttribute('controlsList', 'nodownload noplaybackrate noremoteplayback nofullscreen');
     // copy poster if any
     if (sourceVideo.getAttribute('poster')) {
         modalVideo.setAttribute('poster', sourceVideo.getAttribute('poster'));
@@ -329,7 +327,6 @@ async function openServiceModal(sourceVideo) {
         modalVideo.src = sourceVideo.dataset.src;
     }
 
-    content.appendChild(close);
     content.appendChild(modalVideo);
     modal.appendChild(content);
     document.body.appendChild(backdrop);
@@ -342,7 +339,6 @@ async function openServiceModal(sourceVideo) {
     };
 
     // interactions
-    close.addEventListener('click', cleanup);
     backdrop.addEventListener('click', cleanup);
     document.addEventListener('keydown', function esc(e){ if(e.key==='Escape'){ cleanup(); document.removeEventListener('keydown', esc); } });
 

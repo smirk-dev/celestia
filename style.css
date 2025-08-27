@@ -1356,18 +1356,7 @@ body {
   background: #000;
 }
 
-.service-modal__close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 8px;
-  padding: 6px 10px;
-  cursor: pointer;
-  z-index: 2;
-}
+/* Close button removed; use backdrop click or Esc to dismiss */
 
 .service-card.is-open .service-video {
   inset: 0;
