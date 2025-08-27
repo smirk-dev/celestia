@@ -340,6 +340,10 @@ async function openServiceModal(sourceVideo) {
 
     // interactions
     backdrop.addEventListener('click', cleanup);
+    // close when clicking anywhere outside the content/video within the modal
+    modal.addEventListener('click', (e) => {
+        if (!content.contains(e.target)) cleanup();
+    });
     document.addEventListener('keydown', function esc(e){ if(e.key==='Escape'){ cleanup(); document.removeEventListener('keydown', esc); } });
 
     try { await modalVideo.play(); } catch (e) { /* user gesture may be required */ }
