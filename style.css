@@ -2631,23 +2631,3 @@ section {
   z-index: 1;
 }
 
-/* Debug styles - remove these after testing */
-.project-card {
-  border: 2px solid rgba(255, 0, 0, 0.3);
-}
-
-.project-card.active {
-  border-color: rgba(0, 255, 0, 0.8);
-}
-
-.project-card.entering {
-  border-color: rgba(255, 255, 0, 0.8);
-}
-
-.project-card.exiting {
-  border-color: rgba(255, 165, 0, 0.8);
-}
-
-.project-card.hidden {
-  border-color: rgba(128, 128, 128, 0.8);
-}

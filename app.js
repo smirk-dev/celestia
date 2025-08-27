@@ -575,8 +575,47 @@ function initProjectCards() {
                 card.classList.add('hidden');
             }
             
-            // Update scroll progress for 3D positioning
-            card.style.setProperty('--scroll-progress', cardScrollProgress.toString());
+            // Calculate 3D positioning based on card index and scroll progress
+            const arcRadius = 800;
+            const arcAngle = index * 60; // 60 degrees between each card
+            
+            // Calculate Z and X positions for semi-circular path
+            const zPos = arcRadius * Math.cos(arcAngle * Math.PI / 180);
+            const xPos = arcRadius * Math.sin(arcAngle * Math.PI / 180);
+            
+            // Apply scroll-based transformations
+            const scrollTransform = `translate(-50%, -50%) translateZ(${zPos}px) translateX(${xPos}px) rotateY(${-arcAngle}deg)`;
+            
+            // Apply scroll progress effects
+            let finalTransform = scrollTransform;
+            let opacity = 1;
+            let filter = 'blur(0px)';
+            let scale = 1;
+            
+            if (card.classList.contains('active')) {
+                // Active card - no additional transforms
+                finalTransform += ' rotateX(0deg) scale(1)';
+            } else if (card.classList.contains('entering')) {
+                // Entering card - slight rotation and scale
+                finalTransform += ' rotateX(15deg) scale(0.8)';
+                opacity = 0.7;
+                filter = 'blur(1px)';
+            } else if (card.classList.contains('exiting')) {
+                // Exiting card - more rotation and scale
+                finalTransform += ' rotateX(25deg) scale(0.6)';
+                opacity = 0.4;
+                filter = 'blur(2px)';
+            } else {
+                // Hidden card - maximum rotation and scale
+                finalTransform += ' rotateX(30deg) scale(0.4)';
+                opacity = 0.2;
+                filter = 'blur(3px)';
+            }
+            
+            // Apply the final transform and styles
+            card.style.transform = finalTransform;
+            card.style.opacity = opacity;
+            card.style.filter = filter;
         });
         
         // Update scroll direction indicator
