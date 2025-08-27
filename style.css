@@ -1703,31 +1703,34 @@ section {
 /* Projects Grid Layout - Updated for Semi-Circular Scroll */
 .projects-grid {
   position: relative;
-  height: 300vh; /* Extended height for scroll animation */
-  overflow: hidden;
-  perspective: 2000px;
-  perspective-origin: center center;
+  height: 200vh; /* Extended height for scroll animation */
+  overflow: visible;
+  margin-bottom: 100px;
 }
 
 /* Semi-Circular Scroll Container */
 .projects-scroll-container {
   position: sticky;
-  top: 0;
+  top: 50vh;
+  transform: translateY(-50%);
   height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
+  perspective: 1500px;
 }
 
 /* 3D Cards Container */
 .projects-3d-container {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform-style: preserve-3d;
-  transform: rotateX(60deg) rotateZ(0deg);
 }
 
 /* Individual Project Card - Updated for 3D positioning */
@@ -1742,121 +1745,28 @@ section {
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              filter 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   transform-style: preserve-3d;
-  perspective: 1000px;
-  --mouse-x: 0;
-  --mouse-y: 0;
-  --scroll-progress: 0;
-  --card-index: 0;
-  --arc-radius: 800px;
-  --arc-angle: 0deg;
+  backface-visibility: hidden;
+  transform-origin: center center;
+  will-change: transform, opacity, filter;
 }
 
-/* Semi-circular positioning based on scroll */
-.project-card:nth-child(1) {
-  --card-index: 0;
-  --arc-angle: 0deg;
-}
+/* Remove static positioning - will be handled by JavaScript */
 
-.project-card:nth-child(2) {
-  --card-index: 1;
-  --arc-angle: 60deg;
-}
-
-.project-card:nth-child(3) {
-  --card-index: 2;
-  --arc-angle: 120deg;
-}
-
-/* Dynamic 3D positioning based on scroll progress */
-.project-card {
-  transform: 
-    translate(-50%, -50%)
-    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle))))
-    translateX(calc(var(--arc-radius) * sin(var(--arc-angle))))
-    rotateY(calc(var(--arc-angle) * -1deg))
-    rotateX(calc(var(--scroll-progress) * 20deg))
-    scale(calc(1 - var(--scroll-progress) * 0.3));
-  opacity: calc(1 - var(--scroll-progress) * 0.8);
-  filter: blur(calc(var(--scroll-progress) * 2px));
-}
-
-/* Active card (center of view) */
+/* Card states will be controlled by JavaScript */
 .project-card.active {
-  --scroll-progress: 0;
-  transform: 
-    translate(-50%, -50%)
-    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle))))
-    translateX(calc(var(--arc-radius) * sin(var(--arc-angle))))
-    rotateY(calc(var(--arc-angle) * -1deg))
-    rotateX(0deg)
-    scale(1);
-  opacity: 1;
-  filter: blur(0px);
-  z-index: 10;
+  z-index: 100;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.8),
+              0 0 40px rgba(50,184,198,0.3);
 }
 
-/* Cards moving into view */
-.project-card.entering {
-  --scroll-progress: 0.3;
-  transform: 
-    translate(-50%, -50%)
-    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle))))
-    translateX(calc(var(--arc-radius) * sin(var(--arc-angle))))
-    rotateY(calc(var(--arc-angle) * -1deg))
-    rotateX(calc(var(--scroll-progress) * 15deg))
-    scale(calc(1 - var(--scroll-progress) * 0.2));
-  opacity: calc(1 - var(--scroll-progress) * 0.5);
-  filter: blur(calc(var(--scroll-progress) * 1px));
-  z-index: 5;
-}
+/* Remove state-based CSS, JavaScript will handle transforms */
 
-/* Cards moving out of view */
-.project-card.exiting {
-  --scroll-progress: 0.7;
-  transform: 
-    translate(-50%, -50%)
-    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle))))
-    translateX(calc(var(--arc-radius) * sin(var(--arc-angle))))
-    rotateY(calc(var(--arc-angle) * -1deg))
-    rotateX(calc(var(--scroll-progress) * 25deg))
-    scale(calc(1 - var(--scroll-progress) * 0.4));
-  opacity: calc(1 - var(--scroll-progress) * 0.9);
-  filter: blur(calc(var(--scroll-progress) * 3px));
-  z-index: 1;
-}
-
-/* Cards completely out of view */
-.project-card.hidden {
-  --scroll-progress: 1;
-  transform: 
-    translate(-50%, -50%)
-    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle))))
-    translateX(calc(var(--arc-radius) * sin(var(--arc-angle))))
-    rotateY(calc(var(--arc-angle) * -1deg))
-    rotateX(calc(var(--scroll-progress) * 30deg))
-    scale(calc(1 - var(--scroll-progress) * 0.5));
-  opacity: calc(1 - var(--scroll-progress) * 1);
-  filter: blur(calc(var(--scroll-progress) * 5px));
-  z-index: 0;
-}
-
-/* Enhanced hover effects for 3D cards */
-.project-card:hover {
-  transform: 
-    translate(-50%, -50%)
-    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle) * 1deg) + 50px))
-    translateX(calc(var(--arc-radius) * sin(var(--arc-angle) * 1deg)))
-    rotateY(calc(var(--arc-angle) * -1deg))
-    rotateX(calc(var(--scroll-progress) * 20deg))
-    scale(calc(1.05 - var(--scroll-progress) * 0.3));
-  border-color: rgba(255,255,255,0.2);
-  box-shadow: 
-    0 30px 60px rgba(0,0,0,0.8),
-    0 0 40px rgba(50,184,198,0.3),
-    inset 0 1px 0 rgba(255,255,255,0.1);
-}
+/* Hover effects handled by JavaScript to preserve 3D positioning */
 
 /* Scroll Progress Indicator */
 .scroll-progress-bar {
