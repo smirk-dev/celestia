@@ -1270,6 +1270,7 @@ body {
   border: 1px solid rgba(255,255,255,0.04);
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
   overflow: visible;
   transition: all 360ms var(--ease-standard);
@@ -1282,7 +1283,7 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
 }
 
