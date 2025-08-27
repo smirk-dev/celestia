@@ -1263,7 +1263,7 @@ body {
 }
 
 .services-description {
-    font-size: var(--font-size-lg);
+    font-size: 26px;
     text-align: center;
     color: rgba(255, 255, 255, 0.8);
     margin-bottom: var(--space-32);
