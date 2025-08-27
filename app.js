@@ -219,8 +219,8 @@ function initServiceCards() {
         const video = card.querySelector('.service-video');
 
         const loadAndPlay = async () => {
-            if (!video || !video.dataset.src) return;
-            if (!video.src) {
+            if (!video) return;
+            if (!video.src && video.dataset.src) {
                 video.src = video.dataset.src;
                 try { video.load(); } catch (e) {}
             }

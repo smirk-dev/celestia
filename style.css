@@ -1254,58 +1254,43 @@ body {
 }
 
 .services-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: stretch;
   max-width: 1100px;
   margin: 0 auto;
 }
 
 .service-card {
-  width: calc(100% - 200px);
-  max-width: 1000px;
-  height: 64px; /* thin rectangle like projects */
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 thumbnail */
   background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.04);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.06);
   cursor: pointer;
-  overflow: visible;
-  transition: all 360ms var(--ease-standard);
+  overflow: hidden;
+  transition: transform 240ms var(--ease-standard), box-shadow 240ms var(--ease-standard);
   position: relative;
-  padding: 12px 20px;
-  border-radius: 6px;
+  border-radius: 10px;
 }
 
 .service-card .card-inner {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  position: absolute;
+  inset: 0;
 }
 
-.service-card .card-title {
-  color: var(--color-text);
-  font-weight: 600;
-  font-size: 1.05rem;
-  z-index: 2;
-}
+/* Titles removed for thumbnail design */
 
 .service-video {
   position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: calc(100% - 24px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: width 360ms var(--ease-standard), opacity 280ms var(--ease-standard);
-  pointer-events: none;
-  border-radius: 6px;
+  opacity: 1;
+  pointer-events: none; /* click via card */
+  border-radius: 10px;
   background: #000;
 }
 
@@ -1319,30 +1304,31 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px;
-  border-radius: 10px;
+  padding: 0;
+  border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
   transition: all 380ms cubic-bezier(0.16, 1, 0.3, 1);
   animation: projectExpand 380ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .service-card.is-open .service-video {
-  width: calc(60vw - 120px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   opacity: 1;
   pointer-events: auto;
 }
 
 @media (max-width: 900px) {
-  .service-card { width: calc(100% - 40px); max-width: none; }
+  .services-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
   .service-card.is-open {
     width: calc(100% - 32px);
     height: calc(100vh - 120px);
     left: 16px;
     top: 60px;
     transform: none;
-    border-radius: 8px;
+    border-radius: 10px;
   }
-  .service-card.is-open .service-video { width: calc(100% - 64px); }
 }
 
 /* legacy .service-card visual reset removed to avoid conflict; .service-card uses project-like styling above */
