@@ -1,3 +1,4 @@
+
 .service-card .card-inner {
   width: 100%;
   display: flex;
@@ -90,6 +91,7 @@
   .service-thumb { height: 160px; border-radius: 8px; }
   .play-icon { font-size: 36px; }
 }
+
 
   --color-info: var(--color-slate-500);
   --color-focus-ring: rgba(var(--color-teal-500-rgb), 0.4);
