@@ -1846,8 +1846,8 @@ section {
 .project-card:hover {
   transform: 
     translate(-50%, -50%)
-    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle)) + 50px))
-    translateX(calc(var(--arc-radius) * sin(var(--arc-angle))))
+    translateZ(calc(var(--arc-radius) * cos(var(--arc-angle) * 1deg) + 50px))
+    translateX(calc(var(--arc-radius) * sin(var(--arc-angle) * 1deg)))
     rotateY(calc(var(--arc-angle) * -1deg))
     rotateX(calc(var(--scroll-progress) * 20deg))
     scale(calc(1.05 - var(--scroll-progress) * 0.3));
@@ -2589,4 +2589,65 @@ section {
   outline: 3px solid rgba(50,184,198,0.8);
   outline-offset: 4px;
   transform: scale(1.02);
+}
+
+/* Initial positioning for cards before JavaScript loads */
+.project-card:nth-child(1) {
+  transform: 
+    translate(-50%, -50%)
+    translateZ(800px)
+    translateX(0px)
+    rotateY(0deg)
+    rotateX(0deg)
+    scale(1);
+  opacity: 1;
+  filter: blur(0px);
+  z-index: 10;
+}
+
+.project-card:nth-child(2) {
+  transform: 
+    translate(-50%, -50%)
+    translateZ(400px)
+    translateX(693px)
+    rotateY(-60deg)
+    rotateX(0deg)
+    scale(0.8);
+  opacity: 0.7;
+  filter: blur(1px);
+  z-index: 5;
+}
+
+.project-card:nth-child(3) {
+  transform: 
+    translate(-50%, -50%)
+    translateZ(-400px)
+    translateX(693px)
+    rotateY(-120deg)
+    rotateX(0deg)
+    scale(0.6);
+  opacity: 0.4;
+  filter: blur(2px);
+  z-index: 1;
+}
+
+/* Debug styles - remove these after testing */
+.project-card {
+  border: 2px solid rgba(255, 0, 0, 0.3);
+}
+
+.project-card.active {
+  border-color: rgba(0, 255, 0, 0.8);
+}
+
+.project-card.entering {
+  border-color: rgba(255, 255, 0, 0.8);
+}
+
+.project-card.exiting {
+  border-color: rgba(255, 165, 0, 0.8);
+}
+
+.project-card.hidden {
+  border-color: rgba(128, 128, 128, 0.8);
 }

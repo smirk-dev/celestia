@@ -584,6 +584,9 @@ function initProjectCards() {
             scrollDirectionIndicator.textContent = scrollDirection.toUpperCase();
             scrollDirectionIndicator.className = `scroll-direction ${scrollDirection}`;
         }
+        
+        // Debug logging
+        console.log('Scroll Progress:', scrollProgress, 'Active Card:', activeCardIndex);
     }
     
     // Enhanced scroll event handler with throttling
@@ -627,6 +630,13 @@ function initProjectCards() {
     
     // Initial call to set up initial state
     update3DScrollAnimation();
+    
+    // Debug logging
+    console.log('Project cards initialized:', projectCards.length);
+    console.log('Projects section found:', !!projectsSection);
+    console.log('Scroll progress bar found:', !!scrollProgressBar);
+    console.log('Scroll direction indicator found:', !!scrollDirectionIndicator);
+    console.log('Initial 3D animation setup complete');
     
     // Click handler for card expansion
     projectCards.forEach(card => {
