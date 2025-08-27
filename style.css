@@ -1709,7 +1709,7 @@ section {
 /* Projects Grid Layout - Updated for Semi-Circular Scroll */
 .projects-grid {
   position: relative;
-  height: 400vh; /* Extended height for slower scroll animation */
+  height: 500vh; /* Extended height for slower scroll animation */
   overflow: visible;
   margin-bottom: 100px;
   padding-top: 100px; /* Space for title */

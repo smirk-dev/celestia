@@ -547,7 +547,7 @@ function initProjectCards() {
             // Calculate progress with offset to keep cards in view longer
             const effectiveProgress = (viewportHeight - sectionTop) / sectionHeight;
             // Use a slower curve for the middle portion of the scroll
-            scrollProgress = Math.pow(effectiveProgress * 0.7, 1.2); // Slower progression
+            scrollProgress = Math.pow(effectiveProgress * 0.6, 0.6); // Slower progression
             scrollProgress = Math.max(0, Math.min(1, scrollProgress));
         } else if (sectionTop <= -sectionHeight) {
             scrollProgress = 1;
