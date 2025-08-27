@@ -236,36 +236,16 @@ function initServiceCards() {
             }
         };
 
-        // click toggles open state (button-like)
-        card.addEventListener('click', (e) => {
-            const isNowOpen = card.classList.contains('is-open');
-            // close any other open cards first
-            document.querySelectorAll('.service-card.is-open').forEach(other => {
-                if (other !== card) {
-                    other.classList.remove('is-open');
-                    const vid = other.querySelector('.service-video'); if (vid) { try { vid.pause(); } catch(e){}; if (vid.src) { vid.removeAttribute('src'); try { vid.load(); } catch(e){} } }
-                }
-            });
-
-            if (!isNowOpen) {
-                // open this card
-                card.classList.add('is-open');
-                loadAndPlay();
-                showServiceBackdrop(card);
-            } else {
-                // already open -> close
-                card.classList.remove('is-open');
-                stopAndUnload();
-                removeServiceBackdrop();
-            }
+        // click opens modal viewer (actual size)
+        card.addEventListener('click', async (e) => {
+            await openServiceModal(video);
         });
 
-        // keyboard accessibility: Enter/Space to toggle
+        // keyboard accessibility: Enter/Space to open modal
         card.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                const open = card.classList.toggle('is-open');
-                if (open) loadAndPlay(); else stopAndUnload();
+                openServiceModal(video);
             }
         });
 
@@ -305,6 +285,68 @@ function showServiceBackdrop(card) {
 
 function removeServiceBackdrop() {
     document.querySelectorAll('.card-backdrop').forEach(b => b.remove());
+}
+
+// Modal for services (actual-size playback)
+async function openServiceModal(sourceVideo) {
+    if (!sourceVideo) return;
+    // ensure video src is loaded
+    if (!sourceVideo.src && sourceVideo.dataset.src) {
+        sourceVideo.src = sourceVideo.dataset.src;
+        try { sourceVideo.load(); } catch (e) {}
+    }
+
+    // create backdrop and modal elements
+    const backdrop = document.createElement('div');
+    backdrop.className = 'service-modal-backdrop';
+
+    const modal = document.createElement('div');
+    modal.className = 'service-modal';
+
+    const content = document.createElement('div');
+    content.className = 'service-modal__content';
+
+    const close = document.createElement('button');
+    close.className = 'service-modal__close';
+    close.type = 'button';
+    close.textContent = 'Close';
+
+    const modalVideo = document.createElement('video');
+    modalVideo.className = 'service-modal__video';
+    modalVideo.controls = true;
+    modalVideo.playsInline = true;
+    modalVideo.muted = false;
+    modalVideo.autoplay = true;
+    modalVideo.loop = false;
+    // copy poster if any
+    if (sourceVideo.getAttribute('poster')) {
+        modalVideo.setAttribute('poster', sourceVideo.getAttribute('poster'));
+    }
+    // use same src (load if needed)
+    if (sourceVideo.src) {
+        modalVideo.src = sourceVideo.src;
+    } else if (sourceVideo.dataset.src) {
+        modalVideo.src = sourceVideo.dataset.src;
+    }
+
+    content.appendChild(close);
+    content.appendChild(modalVideo);
+    modal.appendChild(content);
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+
+    const cleanup = () => {
+        try { modalVideo.pause(); } catch (e) {}
+        backdrop.remove();
+        modal.remove();
+    };
+
+    // interactions
+    close.addEventListener('click', cleanup);
+    backdrop.addEventListener('click', cleanup);
+    document.addEventListener('keydown', function esc(e){ if(e.key==='Escape'){ cleanup(); document.removeEventListener('keydown', esc); } });
+
+    try { await modalVideo.play(); } catch (e) { /* user gesture may be required */ }
 }
 
 /* ------------------------- Parallax ------------------------- */

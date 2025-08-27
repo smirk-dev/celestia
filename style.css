@@ -1315,6 +1315,57 @@ body {
   animation: projectExpand 380ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Modal viewer for service videos (actual-size playback) */
+.service-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 11000;
+}
+
+.service-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 11001;
+}
+
+.service-modal__content {
+  position: relative;
+  background: #000;
+  border: 2px solid rgba(255,255,255,0.18);
+  border-radius: 12px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.65);
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow: hidden;
+}
+
+.service-modal__video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 92vw;
+  max-height: 88vh;
+  object-fit: contain;
+  background: #000;
+}
+
+.service-modal__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
 .service-card.is-open .service-video {
   inset: 0;
   width: 100%;
