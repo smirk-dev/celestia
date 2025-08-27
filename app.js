@@ -117,7 +117,7 @@ function setupSectionObserver() {
 
 /* ------------------------- Scroll effects ------------------------- */
 function initScrollEffects() {
-    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observerOptions = { threshold: 0.08, rootMargin: '0px 0px -60px 0px' };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -131,7 +131,7 @@ function initScrollEffects() {
     sections.forEach(section => {
         section.style.opacity = '0';
         section.style.transform = 'translateY(30px)';
-        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        section.style.transition = 'opacity 700ms cubic-bezier(0.22,1,0.36,1), transform 700ms cubic-bezier(0.22,1,0.36,1)';
         observer.observe(section);
     });
 }

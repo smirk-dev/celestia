@@ -344,7 +344,7 @@ html {
 html, body {
   scroll-behavior: smooth;
   /* make the viewport snap to sections vertically for a seamless transition */
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity; /* smoother, less abrupt snapping */
   /* respect any offsets used by JS when scrolling to anchors */
   scroll-padding-top: 50px;
 }
