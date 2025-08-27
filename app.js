@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initProjectVideoHandlers();
     initContactForm();
     initProjectCards(); // Initialize project cards
+    addProjectCardAnimations(); // Add CSS animations
 });
 
 /* ------------------------- Navigation ------------------------- */
