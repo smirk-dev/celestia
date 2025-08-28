@@ -1278,16 +1278,17 @@ body {
 
 .service-card {
   width: 100%;
-  max-width: 360px;
-  height: 0;
-  padding-bottom: 62.5%; /* larger, ~16:10 aspect */
+  max-width: 380px;
+  /* keep a large, slightly wider thumbnail aspect ratio */
+  aspect-ratio: 16 / 10;
   background: rgba(255,255,255,0.02);
-  border: 2px solid rgba(255,255,255,0.14);
+  border: 2px solid rgba(255,255,255,0.12);
   cursor: pointer;
   overflow: hidden;
-  transition: transform 240ms var(--ease-standard), box-shadow 240ms var(--ease-standard);
+  transition: transform 240ms var(--ease-standard), box-shadow 240ms var(--ease-standard), border-color 240ms var(--ease-standard);
   position: relative;
-  border-radius: 12px;
+  border-radius: 14px;
+  display: block;
 }
 
 .service-card .card-inner {
@@ -1303,8 +1304,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px;
-  z-index: 2; /* above video */
+  border-radius: 12px;
+  z-index: 3; /* above video */
   pointer-events: none; /* clicks go to card */
 }
 
@@ -1316,7 +1317,7 @@ body {
   object-fit: cover;
   opacity: 1;
   pointer-events: none; /* click via card */
-  border-radius: 10px;
+  border-radius: 12px;
   background: #000;
 }
 
@@ -1329,16 +1330,16 @@ body {
 .service-card.is-open {
   z-index: 10001;
   background: rgba(0,0,0,0.88);
-  width: 60vw;
-  height: 60vh;
+  width: 70vw;
+  height: 65vh;
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   padding: 0;
-  border-radius: 12px;
+  border-radius: 14px;
   border-width: 2px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
   transition: all 380ms cubic-bezier(0.16, 1, 0.3, 1);
   animation: projectExpand 380ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1746,30 +1747,34 @@ section {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 720px;
-  height: 400px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 32px;
+  width: 880px; /* much bigger - landscape */
+  height: 420px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.00) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 28px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
-              opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-              filter 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-              box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.5s ease-out,
+              filter 0.5s ease-out,
+              box-shadow 0.5s ease;
   transform-style: preserve-3d;
   backface-visibility: hidden;
   transform-origin: center center;
   will-change: transform, opacity, filter;
 }
 
-/* Remove static positioning - will be handled by JavaScript */
 
-/* Card states will be controlled by JavaScript */
+/* Initial offsets for the first few cards to improve perceived spacing */
+.project-card:nth-child(1) { transform: translate(-50%, -50%) translateX(-1200px); }
+.project-card:nth-child(2) { transform: translate(-50%, -50%) translateX(-600px); }
+.project-card:nth-child(3) { transform: translate(-50%, -50%) translateX(0px); }
+.project-card:nth-child(4) { transform: translate(-50%, -50%) translateX(600px); }
+.project-card:nth-child(5) { transform: translate(-50%, -50%) translateX(1200px); }
+
 .project-card.active {
   z-index: 100;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.8),
-              0 0 40px rgba(50,184,198,0.3);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.9), 0 0 50px rgba(50,184,198,0.35);
 }
 
 /* Remove state-based CSS, JavaScript will handle transforms */
@@ -1891,25 +1896,25 @@ section {
 /* Responsive adjustments for 3D scroll */
 @media (max-width: 1200px) {
   .project-card {
-    width: 96vw;
-    height: 320px;
-    max-width: 98vw;
-    border-radius: 24px;
+    width: min(92vw, 720px);
+    height: 360px;
+    max-width: 92vw;
+    border-radius: 22px;
   }
   .projects-grid {
-    height: 350vh; /* Adjusted for medium screens */
+    height: 360vh; /* More vertical space for slower progression */
   }
 }
 
 @media (max-width: 768px) {
   .project-card {
-    width: 99vw;
-    height: 220px;
-    max-width: 100vw;
+    width: min(96vw, 560px);
+    height: 260px;
+    max-width: 96vw;
     border-radius: 16px;
   }
   .projects-grid {
-    height: 250vh; /* Shorter on mobile */
+    height: 260vh; /* shorter on mobile */
   }
   .projects-scroll-container {
     top: 60%; /* Adjust position on mobile */
