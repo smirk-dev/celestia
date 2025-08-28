@@ -1704,21 +1704,21 @@ section {
   outline: 3px solid rgba(50,184,198,0.8);
 }
 
-/* ===== INNOVATIVE PROJECT CARDS ===== */
+/* ===== FIXED PROJECT CARDS SECTION ===== */
 
-/* Projects Grid Layout - Updated for Semi-Circular Scroll */
+/* Projects Grid Layout - Simplified and Optimized */
 .projects-grid {
   position: relative;
-  height: 300vh; /* Extended height for slower scroll animation */
+  height: 200vh; /* Reduced from 300vh for better control */
   overflow: visible;
   margin-bottom: 100px;
-  padding-top: 100px; /* Space for title */
+  padding-top: 100px;
 }
 
-/* Semi-Circular Scroll Container */
+/* Semi-Circular Scroll Container - Simplified */
 .projects-scroll-container {
   position: sticky;
-  top: 55%; /* Lower position to show below title */
+  top: 50%;
   transform: translateY(-50%);
   height: 80vh;
   width: 100%;
@@ -1726,10 +1726,10 @@ section {
   align-items: center;
   justify-content: center;
   overflow: visible;
-  perspective: 1500px;
+  perspective: 1200px; /* Reduced for better performance */
 }
 
-/* 3D Cards Container */
+/* 3D Cards Container - Performance Optimized */
 .projects-3d-container {
   position: relative;
   width: 100%;
@@ -1738,51 +1738,123 @@ section {
   align-items: center;
   justify-content: center;
   transform-style: preserve-3d;
-  margin-top: 20px; /* Space below title */
 }
 
-/* Individual Project Card - Updated for 3D positioning */
+/* Individual Project Card - Simplified Transform Logic */
 .project-card {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 720px;
-  height: 400px;
+  width: 600px; /* Reduced from 720px */
+  height: 350px; /* Reduced from 400px */
   background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 32px;
+  border-radius: 24px; /* Reduced from 32px */
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
-              opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-              filter 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-              box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
+  
+  /* Simplified transitions - only what's needed */
+  transition: 
+    transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 0.4s ease,
+    filter 0.4s ease,
+    box-shadow 0.4s ease;
+  
+  /* Performance optimizations */
   transform-origin: center center;
   will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  
+  /* Initial state - prevent flash */
+  transform: translate(-50%, -50%) translateZ(-500px) scale(0.5);
+  opacity: 0.3;
 }
 
-/* Remove static positioning - will be handled by JavaScript */
-
-/* Card states will be controlled by JavaScript */
+/* Active card state */
 .project-card.active {
   z-index: 100;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.8),
-              0 0 40px rgba(50,184,198,0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(50,184,198,0.2);
 }
 
-/* Remove state-based CSS, JavaScript will handle transforms */
+/* Expanded card state - Simplified */
+.project-card.is-open {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1) !important;
+  width: 90vw;
+  height: 70vh;
+  max-width: 1200px;
+  max-height: 800px;
+  z-index: 10000;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(20px);
+  border-color: rgba(50,184,198,0.6);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(50,184,198,0.3);
+  opacity: 1 !important;
+  filter: blur(0) !important;
+}
 
-/* Hover effects handled by JavaScript to preserve 3D positioning */
+/* Card Content Styles - Simplified */
+.card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.85) 40%, rgba(0,0,0,0.95) 100%);
+  transition: transform 0.3s ease;
+}
 
-/* Scroll Progress Indicator */
+.project-card:hover .card-content {
+  transform: translateY(-5px);
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 8px;
+  font-family: 'Cropaso', var(--font-family-base);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+.project-description {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.tech-stack {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tech-tag {
+  padding: 4px 8px;
+  background: rgba(50,184,198,0.15);
+  border: 1px solid rgba(50,184,198,0.25);
+  border-radius: 12px;
+  font-size: 0.7rem;
+  color: rgba(50,184,198,0.9);
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.tech-tag:hover {
+  background: rgba(50,184,198,0.25);
+  border-color: rgba(50,184,198,0.4);
+}
+
+/* Scroll Progress Indicator - Simplified */
 .scroll-progress-bar {
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 4px;
-  height: 100px;
+  width: 3px;
+  height: 80px;
   background: rgba(255,255,255,0.1);
   border-radius: 2px;
   z-index: 1000;
@@ -1790,285 +1862,68 @@ section {
 
 .scroll-progress-fill {
   width: 100%;
+  height: 0%;
   background: linear-gradient(to bottom, #32b8c6, #1a8a94);
   border-radius: 2px;
   transition: height 0.1s ease;
-  box-shadow: 0 0 10px rgba(50,184,198,0.5);
+  transform-origin: bottom;
 }
 
-/* Scroll Direction Indicator */
-.scroll-direction {
+/* Backdrop for expanded cards */
+.project-backdrop {
   position: fixed;
-  top: 50%;
-  right: 30px;
-  transform: translateY(-50%);
-  color: rgba(255,255,255,0.6);
-  font-size: 0.8rem;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  z-index: 1000;
-  transition: all 0.3s ease;
-}
-
-.scroll-direction.up {
-  color: #32b8c6;
-  text-shadow: 0 0 10px rgba(50,184,198,0.5);
-}
-
-.scroll-direction.down {
-  color: #32b8c6;
-  text-shadow: 0 0 10px rgba(50,184,198,0.5);
-}
-
-/* Enhanced backdrop for 3D effect */
-.projects-scroll-container::before {
-  content: '';
-  position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.8) 100%);
-  pointer-events: none;
-  z-index: -1;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s ease;
 }
 
-/* Floating particles in the 3D space */
-.space-particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
+.project-backdrop.active {
+  opacity: 1;
+  visibility: visible;
 }
 
-.space-particle {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: rgba(50,184,198,0.6);
-  border-radius: 50%;
-  animation: floatInSpace 8s linear infinite;
-}
-
-.space-particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
-.space-particle:nth-child(2) { left: 80%; top: 30%; animation-delay: 2s; }
-.space-particle:nth-child(3) { left: 20%; top: 70%; animation-delay: 4s; }
-.space-particle:nth-child(4) { left: 70%; top: 80%; animation-delay: 6s; }
-.space-particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 1s; }
-.space-particle:nth-child(6) { left: 90%; top: 60%; animation-delay: 3s; }
-
-@keyframes floatInSpace {
-  0% {
-    transform: translateZ(0px) scale(1);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateZ(200px) scale(0.5);
-    opacity: 0;
-  }
-}
-
-/* Smooth transitions for all transform properties */
-.project-card {
-  transition: 
-    transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
-    opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-    filter 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-    box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* Performance optimizations for 3D transforms */
-.projects-3d-container,
-.project-card {
-  will-change: transform, opacity, filter;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-}
-
-/* Responsive adjustments for 3D scroll */
+/* Responsive Design */
 @media (max-width: 1200px) {
   .project-card {
-    width: 96vw;
-    height: 320px;
-    max-width: 98vw;
-    border-radius: 24px;
+    width: 500px;
+    height: 300px;
   }
   .projects-grid {
-    height: 350vh; /* Adjusted for medium screens */
+    height: 180vh;
   }
 }
 
 @media (max-width: 768px) {
   .project-card {
-    width: 99vw;
-    height: 220px;
-    max-width: 100vw;
-    border-radius: 16px;
+    width: 90vw;
+    height: 250px;
+    max-width: 400px;
   }
   .projects-grid {
-    height: 250vh; /* Shorter on mobile */
+    height: 150vh;
   }
   .projects-scroll-container {
-    top: 60%; /* Adjust position on mobile */
+    top: 55%;
+  }
+  .project-card.is-open {
+    width: 95vw;
+    height: 80vh;
   }
 }
 
-/* ===== CARD CONTENT STYLES ===== */
-.card-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 30px;
-  background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.9) 40%, rgba(0,0,0,0.95) 100%);
-  transform: translateY(0);
-  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  transform-style: preserve-3d;
-  perspective: 1000px;
+/* Remove complex animations that cause performance issues */
+.project-card::before,
+.project-card::after {
+  display: none;
 }
 
-.project-card:hover .card-content {
-  transform: translateY(-10px) translateZ(20px);
-}
-
-.project-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 8px;
-  font-family: 'Cropaso', var(--font-family-base);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-}
-
-.project-description {
-  font-size: 1rem;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-.tech-stack {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.tech-tag {
-  padding: 6px 12px;
-  background: rgba(50,184,198,0.2);
-  border: 1px solid rgba(50,184,198,0.3);
-  border-radius: 20px;
-  font-size: 0.8rem;
-  color: rgba(50,184,198,0.9);
-  font-weight: 500;
-  transition: all 0.3s ease;
-  animation: tagFloat 4s ease-in-out infinite;
-  animation-delay: calc(var(--tag-index, 0) * 0.2s);
-}
-
-.tech-tag:hover {
-  background: rgba(50,184,198,0.3);
-  border-color: rgba(50,184,198,0.5);
-  transform: translateY(-2px);
-}
-
-/* Add stagger animation to tech tags */
-.tech-stack .tech-tag:nth-child(1) { --tag-index: 0; }
-.tech-stack .tech-tag:nth-child(2) { --tag-index: 1; }
-.tech-stack .tech-tag:nth-child(3) { --tag-index: 2; }
-
-/* Card Overlay (Expanded State) */
-.card-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.95);
-  backdrop-filter: blur(20px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-  transform: scale(0.8) rotateY(15deg);
-}
-
-.project-card.is-open .card-overlay {
-  opacity: 1;
-  visibility: visible;
-  transform: scale(1) rotateY(0deg);
-}
-
-.overlay-content {
-  text-align: center;
-  max-width: 600px;
-}
-
-.overlay-content h3 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  background: linear-gradient(45deg, #ffffff, #32b8c6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.overlay-content p {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.9);
-  margin-bottom: 30px;
-}
-
-.project-details {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.detail-item {
-  text-align: center;
-}
-
-.detail-label {
-  display: block;
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.6);
-  margin-bottom: 5px;
-}
-
-.detail-value {
-  font-size: 1.1rem;
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.project-links {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-}
-
-.project-link {
-  padding: 12px 24px;
-  background: rgba(50,184,198,0.2);
-  border: 1px solid rgba(50,184,198,0.4);
-  border-radius: 25px;
-  color: #32b8c6;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.project-link:hover {
-  background: rgba(50,184,198,0.3);
-  border-color: rgba(50,184,198,0.6);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(50,184,198,0.2);
+/* Simplified hover effects */
+.project-card:hover {
+  box-shadow: 0 15px 30px rgba(50,184,198,0.2);
 }
 
 /* ===== HOLOGRAPHIC CARD ANIMATIONS ===== */
