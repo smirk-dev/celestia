@@ -872,22 +872,9 @@ body {
   display: none; /* hide the small accent so no peeking piece shows next to the nav */
 }
 
-/* Vertical line matching the menu height so it only extends as far as the text */
+/* Decorative vertical line removed - keep the knob behavior but hide the line */
 .nav-menu::before {
-  content: '';
-  position: absolute;
-  /* align with the marker area using the nav padding variable */
-  left: var(--nav-padding-left, 80px);
-  /* shift left by half the line width so the line's center matches the knob center */
-  margin-left: calc(-1.25px); /* half of width: 2.5px */
-  top: 0;
-  bottom: 0;
-  width: 2.5px;
-  background: linear-gradient(180deg, #b6e0fe 0%, #6e7fa3 100%);
-  border-radius: 2px;
-  z-index: 0;
-  box-shadow: 0 0 12px #b6e0fe44;
-  pointer-events: none;
+  display: none;
 }
 
 /* Moving star knob that follows the active item along the vertical line */
@@ -918,6 +905,23 @@ body {
   .nav-menu::before {
     top: 120px;
     bottom: 420px;
+  }
+}
+
+/* Small-screen fix: center the decorative vertical line and moving knob
+   inside the compact sidebar so they remain visible/aligned on narrow viewports */
+@media (max-width: 900px) {
+  .nav-menu::before {
+    left: 50%;
+    margin-left: 0; /* remove the negative half-width offset */
+    transform: translateX(-50%);
+  }
+
+  .nav-menu::after {
+    left: 50%;
+    margin-left: 0; /* remove the negative half-width offset */
+    /* combine X-centering with existing Y centering */
+    transform: translate(-50%, -50%);
   }
 }
 
