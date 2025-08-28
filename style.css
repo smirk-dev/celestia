@@ -1185,24 +1185,19 @@ body {
 
 /* GIF inside hero placeholder (shrunk by default) */
 .hero-gif {
-  /* make the GIF slightly larger than the placeholder for stronger presence */
-  width: 130%;
+  width: 100%; /* fill the hero placeholder */
   height: auto;
   max-width: none; /* allow very large displays if container allows */
   max-height: none;
   display: block;
   object-fit: contain;
   pointer-events: none;
-  transform: translateZ(0) scale(1.10);
-  transform-origin: center center;
 }
 
 @media (max-width: 1200px) {
   .hero-gif {
-  /* keep contained on smaller screens to avoid overflow */
-  width: 100%;
+    width: 95%; /* keep slightly inset on smaller screens */
     max-width: 1200px;
-  transform: none; /* avoid extra scaling on mobile */
   }
 }
 
