@@ -1156,6 +1156,7 @@ body {
   /* slightly reduced from extreme: large but more moderate hero */
   box-sizing: border-box; /* ensure padding doesn't break sizing */
   padding-top: 20px; /* a little extra space above the GIF */
+  padding-bottom: 20px; /* a little extra space below the GIF */
   width: clamp(760px, 68vw, 1600px); /* slightly smaller baseline and max */
   aspect-ratio: 1 / 1;
   background: transparent;
@@ -1189,8 +1190,9 @@ body {
 .hero-gif {
   width: 150%; /* just a little smaller */
   height: auto;
-  max-height: calc(100% - 20px); /* prevent vertical overflow beyond container padding */
-  object-position: top center; /* make sure focal point stays at the top */
+  /* account for both top and bottom padding so GIF isn't clipped */
+  max-height: calc(100% - 40px);
+  object-position: top center; /* keep focal point near the top while leaving bottom padding */
   max-width: none; /* allow very large displays if container allows */
   max-height: none;
   display: block;
