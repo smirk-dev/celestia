@@ -1155,14 +1155,14 @@ body {
 .hero-3d-placeholder {
   /* slightly reduced from extreme: large but more moderate hero */
   box-sizing: border-box; /* ensure padding doesn't break sizing */
-  padding-top: 12px; /* a little extra space above the GIF */
+  padding-top: 20px; /* a little extra space above the GIF */
   width: clamp(760px, 68vw, 1600px); /* slightly smaller baseline and max */
   aspect-ratio: 1 / 1;
   background: transparent;
   border: none !important;
   border-radius: 0; /* square shape */
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* anchor content to top so GIF isn't cropped */
   justify-content: center;
   margin: 0;
   transition: all var(--duration-normal) var(--ease-standard);
@@ -1189,6 +1189,8 @@ body {
 .hero-gif {
   width: 150%; /* just a little smaller */
   height: auto;
+  max-height: calc(100% - 20px); /* prevent vertical overflow beyond container padding */
+  object-position: top center; /* make sure focal point stays at the top */
   max-width: none; /* allow very large displays if container allows */
   max-height: none;
   display: block;
