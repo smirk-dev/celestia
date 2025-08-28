@@ -28,10 +28,8 @@
         <section id="hero" class="hero-section">
             <div class="hero-content">
                 <div class="hero-3d-placeholder">
-                    <video id="hero-video" class="hero-video" autoplay muted loop playsinline>
-                        <source src="hero.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <!-- GIF-only hero (no video) -->
+                    <img id="hero-gif" class="hero-gif" src="CELESTIA_LOGO.gif" alt="CELESTIA animated logo" loading="lazy" />
                 </div>
             </div>
         </section>
@@ -45,8 +43,6 @@
                     <!-- Thumbnail preview acts as button; click opens full video viewer -->
                     <div class="service-card" data-service="branding" role="button" tabindex="0" aria-label="Play Branding service video">
                         <div class="card-inner">
-                            <!-- Optional custom thumbnail image; replace src with your image -->
-                            <img class="service-thumb" src="branding_thumbnail.png" alt="Branding service thumbnail" />
                             <video class="service-video" playsinline muted loop preload="metadata" data-src="BRANDING_SERVICE.mp4"></video>
                         </div>
                     </div>
@@ -54,7 +50,6 @@
                     <!-- Placeholder Service 2 -->
                     <div class="service-card" data-service="service-2" role="button" tabindex="0" aria-label="Play Service 2 video">
                         <div class="card-inner">
-                            <img class="service-thumb" src="" alt="Visualization" />
                             <video class="service-video" playsinline muted loop preload="metadata" data-src=""></video>
                         </div>
                     </div>
@@ -62,7 +57,6 @@
                     <!-- Placeholder Service 3 -->
                     <div class="service-card" data-service="service-3" role="button" tabindex="0" aria-label="Play Service 3 video">
                         <div class="card-inner">
-                            <img class="service-thumb" src="" alt="Motion Design" />
                             <video class="service-video" playsinline muted loop preload="metadata" data-src=""></video>
                         </div>
                     </div>
@@ -74,192 +68,26 @@
         <section id="projects" class="projects-section">
             <div class="section-container">
                 <h2 class="section-title">PROJECTS</h2>
-                <div class="projects-grid">
-                    <div class="projects-scroll-container">
-                        <div class="projects-3d-container">
-                            <!-- Project Card 1: Holographic Interface -->
-                            <div class="project-card holographic" data-project="1">
-                                <div class="card-hologram">
-                                    <div class="hologram-layers">
-                                        <div class="hologram-layer layer-1"></div>
-                                        <div class="hologram-layer layer-2"></div>
-                                        <div class="hologram-layer layer-3"></div>
-                                    </div>
-                                    <div class="hologram-core">
-                                        <div class="core-glow"></div>
-                                        <div class="core-pulse"></div>
-                                    </div>
-                                </div>
-                                <div class="card-content">
-                                    <div class="project-title">Holographic Interface</div>
-                                    <div class="project-description">Next-gen AR/VR interface with neural network integration</div>
-                                    <div class="tech-stack">
-                                        <span class="tech-tag">React</span>
-                                        <span class="tech-tag">Three.js</span>
-                                        <span class="tech-tag">WebGL</span>
-                                    </div>
-                                </div>
-                                <div class="card-overlay">
-                                    <div class="overlay-content">
-                                        <h3>Holographic Interface</h3>
-                                        <p>Revolutionary AR/VR interface that responds to neural signals and eye tracking. Built with cutting-edge WebGL and machine learning algorithms.</p>
-                                        <div class="project-details">
-                                            <div class="detail-item">
-                                                <span class="detail-label">Duration:</span>
-                                                <span class="detail-value">8 months</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <span class="detail-label">Team:</span>
-                                                <span class="detail-value">12 developers</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <span class="detail-label">Impact:</span>
-                                                <span class="detail-value">2.3M users</span>
-                                            </div>
-                                        </div>
-                                        <div class="project-links">
-                                            <a href="#" class="project-link">Live Demo</a>
-                                            <a href="#" class="project-link">Source Code</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Project Card 2: Quantum Computing Simulator -->
-                            <div class="project-card quantum" data-project="2">
-                                <div class="quantum-orbitals">
-                                    <div class="orbital orbital-1"></div>
-                                    <div class="orbital orbital-2"></div>
-                                    <div class="orbital orbital-3"></div>
-                                    <div class="quantum-particles">
-                                        <div class="particle particle-1"></div>
-                                        <div class="particle particle-2"></div>
-                                        <div class="particle particle-3"></div>
-                                    </div>
-                                </div>
-                                <div class="card-content">
-                                    <div class="project-title">Quantum Simulator</div>
-                                    <div class="project-description">Real-time quantum computing simulation with visual algorithms</div>
-                                    <div class="tech-stack">
-                                        <span class="tech-tag">Python</span>
-                                        <span class="tech-tag">Qiskit</span>
-                                        <span class="tech-tag">WebAssembly</span>
-                                    </div>
-                                </div>
-                                <div class="card-overlay">
-                                    <div class="overlay-content">
-                                        <h3>Quantum Computing Simulator</h3>
-                                        <p>Advanced quantum computing simulator that visualizes quantum algorithms in real-time. Features entanglement visualization and quantum error correction.</p>
-                                        <div class="project-details">
-                                            <div class="detail-item">
-                                                <span class="detail-label">Duration:</span>
-                                                <span class="detail-value">14 months</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <span class="detail-label">Team:</span>
-                                                <span class="detail-value">8 physicists</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <span class="detail-label">Impact:</span>
-                                                <span class="detail-value">Research labs</span>
-                                            </div>
-                                        </div>
-                                        <div class="project-links">
-                                            <a href="#" class="project-link">Live Demo</a>
-                                            <a href="#" class="project-link">Research Paper</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Project Card 3: Neural Network Visualizer -->
-                            <div class="project-card neural" data-project="3">
-                                <div class="neural-network">
-                                    <div class="network-layer layer-input">
-                                        <div class="neuron"></div>
-                                        <div class="neuron"></div>
-                                        <div class="neuron"></div>
-                                    </div>
-                                    <div class="network-layer layer-hidden">
-                                        <div class="neuron"></div>
-                                        <div class="neuron"></div>
-                                        <div class="neuron"></div>
-                                        <div class="neuron"></div>
-                                    </div>
-                                    <div class="network-layer layer-output">
-                                        <div class="neuron"></div>
-                                        <div class="neuron"></div>
-                                    </div>
-                                    <div class="synapses">
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                        <div class="synapse"></div>
-                                    </div>
-                                </div>
-                                <div class="card-content">
-                                    <div class="project-title">Neural Visualizer</div>
-                                    <div class="project-description">Interactive deep learning network visualization tool</div>
-                                    <div class="tech-stack">
-                                        <span class="tech-tag">TensorFlow</span>
-                                        <span class="tech-tag">D3.js</span>
-                                        <span class="tech-tag">WebGL</span>
-                                    </div>
-                                </div>
-                                <div class="card-overlay">
-                                    <div class="overlay-content">
-                                        <h3>Neural Network Visualizer</h3>
-                                        <p>Interactive tool for visualizing and understanding deep learning networks. Real-time training visualization with layer-by-layer analysis.</p>
-                                        <div class="project-details">
-                                            <div class="detail-item">
-                                                <span class="detail-label">Duration:</span>
-                                                <span class="detail-value">6 months</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <span class="detail-label">Team:</span>
-                                                <span class="detail-value">6 ML engineers</span>
-                                            </div>
-                                            <div class="detail-item">
-                                                <span class="detail-label">Impact:</span>
-                                                <span class="detail-value">Educational</span>
-                                            </div>
-                                        </div>
-                                        <div class="project-links">
-                                            <a href="#" class="project-link">Live Demo</a>
-                                            <a href="#" class="project-link">Documentation</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="fancy-projects-scroll">
+                    <div class="project-card" data-project="1">
+                        <div class="project-card-content">
+                            <h3 class="project-title">Project One</h3>
+                            <p class="project-desc">A brief description of Project One. Add more details or media as needed.</p>
                         </div>
-                        
-                        <!-- Space particles for 3D effect -->
-                        <div class="space-particles">
-                            <div class="space-particle"></div>
-                            <div class="space-particle"></div>
-                            <div class="space-particle"></div>
-                            <div class="space-particle"></div>
-                            <div class="space-particle"></div>
-                            <div class="space-particle"></div>
+                    </div>
+                    <div class="project-card" data-project="2">
+                        <div class="project-card-content">
+                            <h3 class="project-title">Project Two</h3>
+                            <p class="project-desc">A brief description of Project Two. Add more details or media as needed.</p>
+                        </div>
+                    </div>
+                    <div class="project-card" data-project="3">
+                        <div class="project-card-content">
+                            <h3 class="project-title">Project Three</h3>
+                            <p class="project-desc">A brief description of Project Three. Add more details or media as needed.</p>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Scroll Progress Indicator -->
-                <div class="scroll-progress-bar">
-                    <div class="scroll-progress-fill"></div>
-                </div>
-                
-                <!-- Scroll Direction Indicator -->
-                <div class="scroll-direction">SCROLL</div>
             </div>
         </section>
         <!-- About Us Section (moved below projects, above contact) -->

@@ -1153,8 +1153,8 @@ body {
 }
 
 .hero-3d-placeholder {
-  /* circular hero for homepage: responsive, no border to merge with black background */
-  width: clamp(260px, 40vw, 520px);
+  /* larger circular hero for homepage: responsive and fills more visual space */
+  width: clamp(360px, 52vw, 700px); /* increased baseline and max */
   aspect-ratio: 1 / 1;
   background: transparent;
   border: none !important;
@@ -1181,6 +1181,29 @@ body {
   transform: none;
   transform-origin: center center;
   will-change: auto;
+}
+
+/* GIF inside hero placeholder (shrunk by default) */
+.hero-gif {
+  /* make the GIF slightly larger than the placeholder for stronger presence */
+  width: 130%;
+  height: auto;
+  max-width: none; /* allow very large displays if container allows */
+  max-height: none;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+  transform: translateZ(0) scale(1.10);
+  transform-origin: center center;
+}
+
+@media (max-width: 1200px) {
+  .hero-gif {
+  /* keep contained on smaller screens to avoid overflow */
+  width: 100%;
+    max-width: 1200px;
+  transform: none; /* avoid extra scaling on mobile */
+  }
 }
 
 .placeholder-content {
@@ -1668,8 +1691,8 @@ html, body, section, .container, .card, .about-text, .projects-section p, .conta
   margin: 0 auto;
   z-index: 2;
   grid-column: 1 / -1;
-  width: clamp(420px, 52vw, 900px); /* target large visible size */
-  height: clamp(420px, 72vh, 900px);
+  width: clamp(420px, 52vw, 1800px); /* target large visible size */
+  height: clamp(420px, 72vh, 1800px);
   max-height: 820px;
   overflow: hidden;
   transform: translateY(80px) rotate(30deg) scale(1.9); /* move down 30px, tilt, and increase size */
