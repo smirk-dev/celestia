@@ -572,8 +572,8 @@ function initProjectCards() {
             const cardAngle = index * angleStep - currentRotation;
             const cardAngleRad = (cardAngle * Math.PI) / 180;
             
-            // Radius of the semi-circular path
-            const radius = 500; // Slightly smaller radius for better visibility
+            // Radius of the semi-circular path (increased to space cards further apart)
+            const radius = 900; // larger radius for wider spacing
             
             // Calculate position on the semi-circle
             const xPos = radius * Math.sin(cardAngleRad);
