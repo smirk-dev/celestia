@@ -419,7 +419,7 @@ function initParticles() {
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '0'; // sits behind normal content (which tends to be z-index:auto/1+)
+    canvas.style.zIndex = '-1'; // sit behind normal content to avoid interfering with layout or nav
     canvas.style.mixBlendMode = 'screen';
     canvas.style.opacity = '0.12';
     document.body.insertBefore(canvas, document.body.firstChild);
