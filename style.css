@@ -2494,7 +2494,7 @@ html, body, main, .main-content, section, .container {
   object-position: center center !important;
   max-width: 720px !important;
   max-height: 720px !important;
-  transform: rotate(20deg) scale(0.8) !important; /* tilt and zoom */
+  transform: rotate(15deg) scale(0.8) !important; /* tilt and zoom */
   transform-origin: center center !important;
   will-change: transform !important;
 }
