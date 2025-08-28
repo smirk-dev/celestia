@@ -1712,13 +1712,15 @@ section {
   height: 200vh; /* Reduced from 300vh for better control */
   overflow: visible;
   margin-bottom: 100px;
-  padding-top: 100px;
+  /* increased top padding so the title doesn't overlap the animation */
+  padding-top: 220px;
 }
 
 /* Semi-Circular Scroll Container - Simplified */
 .projects-scroll-container {
   position: sticky;
-  top: 50%;
+  /* move the scroll container lower so cards sit below the title */
+  top: 60%;
   transform: translateY(-50%);
   height: 80vh;
   width: 100%;
@@ -1738,6 +1740,8 @@ section {
   align-items: center;
   justify-content: center;
   transform-style: preserve-3d;
+  /* additional spacing to avoid overlap with headings */
+  margin-top: 40px;
 }
 
 /* Individual Project Card - Simplified Transform Logic */
@@ -1906,8 +1910,9 @@ section {
   .projects-grid {
     height: 150vh;
   }
+  /* nudge down on mobile as well to prevent overlap */
   .projects-scroll-container {
-    top: 55%;
+    top: 60%;
   }
   .project-card.is-open {
     width: 95vw;
