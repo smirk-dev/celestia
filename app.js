@@ -517,210 +517,267 @@ function removeProjectBackdrop() {
 /* ===== INNOVATIVE PROJECT CARDS FUNCTIONALITY ===== */
 function initProjectCards() {
     const projectCards = document.querySelectorAll('.project-card');
-    const scrollProgressFill = document.querySelector('.scroll-progress-fill');
+    const scrollProgressBar = document.querySelector('.scroll-progress-fill');
+    const scrollDirectionIndicator = document.querySelector('.scroll-direction');
     const projectsSection = document.querySelector('#projects');
     
-    if (!projectCards.length || !projectsSection) {
-        console.warn('Project cards or section not found');
-        return;
-    }
+    let lastScrollTop = 0;
+    let scrollDirection = 'down';
+    let isScrolling = false;
+    let scrollTimeout;
+    let snapTimeout = null;
 
-    // State management
-    let isAnimating = false;
-    let animationFrame = null;
-    let lastScrollY = 0;
-    
-    // Configuration
-    const config = {
-        cardCount: projectCards.length,
-        radius: 600,
-        maxRotation: 120, // Total rotation range in degrees
-        minScale: 0.5,
-        maxScale: 1,
-        minOpacity: 0.2,
-        maxOpacity: 1
-    };
-    
-    config.angleStep = config.maxRotation / Math.max(config.cardCount - 1, 1);
+    // Curve parameters for mapping effective progress -> animation progress
+    // Keep these together so we can invert the mapping when snapping
+    const CURVE_SCALE = 0.6;
+    const CURVE_POWER = 0.6;
 
-    // Initialize cards
-    projectCards.forEach((card, index) => {
+    // Add ARIA attributes for accessibility
+    projectCards.forEach(card => {
         card.setAttribute('tabindex', '0');
         card.setAttribute('role', 'button');
         card.setAttribute('aria-expanded', 'false');
-        card.dataset.index = index;
-        
-        // Set initial transform to prevent flash
-        card.style.transform = `translate(-50%, -50%) translateZ(-${config.radius}px) scale(${config.minScale})`;
-        card.style.opacity = config.minOpacity;
     });
 
-    // Optimized scroll progress calculation
-    function getScrollProgress() {
-        const rect = projectsSection.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        
-        // Start animation when section enters viewport
-        const startY = windowHeight;
-        const endY = -rect.height + windowHeight;
-        
-        if (rect.top > startY) return 0;
-        if (rect.top < endY) return 1;
-        
-        return (startY - rect.top) / (startY - endY);
-    }
+    // Rotation state for smoothing (prevents skipping when scrolling quickly)
+    let currentRotation = 0;
+    let targetRotation = 0;
+    const rotationSmoothing = 0.08; // 0 = instant, 0.1 = slow follow, increase to make it slower
+    let isRotationAnimating = false;
 
-    // Main animation function - simplified and optimized
-    function updateCardPositions() {
-        const scrollProgress = getScrollProgress();
-        
-        // Update progress bar
-        if (scrollProgressFill) {
-            scrollProgressFill.style.height = `${scrollProgress * 100}%`;
-        }
-        
-        // Calculate current rotation offset
-        const rotationOffset = scrollProgress * config.maxRotation;
-        
-        // Update each card
+    // Render cards for a given rotation value (degrees)
+    function renderAtRotation(rotation, scrollProgress) {
+        const totalRotation = 120; // Reduced from 180 to keep cards more visible
+        const cardCount = projectCards.length;
+        const angleStep = totalRotation / (cardCount - 1); // Angle between cards
+        const radius = 500; // Slightly smaller radius for better visibility
+
         projectCards.forEach((card, index) => {
-            // Calculate this card's angle
-            const baseAngle = index * config.angleStep;
-            const currentAngle = baseAngle - rotationOffset;
-            const angleRad = (currentAngle * Math.PI) / 180;
-            
-            // Calculate position on the arc
-            const x = Math.sin(angleRad) * config.radius;
-            const z = (Math.cos(angleRad) - 1) * config.radius;
-            
-            // Calculate scale based on Z position (closer = larger)
-            const normalizedZ = (z + config.radius) / config.radius;
-            const scale = config.minScale + (config.maxScale - config.minScale) * normalizedZ;
-            
-            // Calculate opacity based on angle from center
-            const angleFromCenter = Math.abs(currentAngle);
-            const maxAngleForVisibility = config.angleStep * 2;
-            const opacityFactor = Math.max(0, 1 - (angleFromCenter / maxAngleForVisibility));
-            const opacity = config.minOpacity + (config.maxOpacity - config.minOpacity) * opacityFactor;
-            
-            // Calculate blur for depth effect
-            const blur = (1 - normalizedZ) * 2;
-            
-            // Apply transform as a single operation
-            const transform = `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, 0, ${z.toFixed(1)}px) rotateY(${(-currentAngle).toFixed(1)}deg) scale(${scale.toFixed(3)})`;
-            
-            // Batch DOM updates
+            // Calculate this card's angle on the semi-circle
+            const cardAngle = index * angleStep - rotation;
+            const cardAngleRad = (cardAngle * Math.PI) / 180;
+
+            // Calculate position on the semi-circle
+            const xPos = radius * Math.sin(cardAngleRad);
+            const zPos = radius * Math.cos(cardAngleRad) - radius; // Offset to center
+            const yPos = 50; // Slight downward offset to position below title
+
+            // Calculate scale based on z-position (cards further back are smaller)
+            const scale = 0.5 + (0.5 * ((zPos + radius) / radius));
+
+            // Calculate opacity based on angle (cards at edges fade out)
+            let opacity = 1;
+            const angleDiff = Math.abs(cardAngle);
+            if (angleDiff > 60) { // Start fading earlier
+                opacity = Math.max(0.3, 1 - ((angleDiff - 60) / 60)); // Keep minimum opacity higher
+            }
+
+            // Apply blur for depth effect
+            const blur = Math.max(0, (radius - (zPos + radius)) / radius * 3);
+
+            // Construct the transform
+            const transform = `translate(-50%, -50%) translate3d(${xPos}px, ${yPos}px, ${zPos}px) rotateY(${-cardAngle}deg) scale(${scale})`;
+
+            // Apply styles
             card.style.transform = transform;
-            card.style.opacity = opacity.toFixed(3);
-            card.style.filter = `blur(${blur.toFixed(1)}px)`;
-            card.style.zIndex = Math.round(normalizedZ * 100);
-            
-            // Update active state
-            const isActive = Math.abs(currentAngle) < config.angleStep * 0.7;
-            card.classList.toggle('active', isActive);
-        });
-        
-        isAnimating = false;
-    }
+            card.style.opacity = opacity;
+            card.style.filter = `blur(${blur}px)`;
+            card.style.zIndex = Math.round((zPos + radius) * 10);
 
-    // Throttled scroll handler
-    function handleScroll() {
-        if (isAnimating) return;
-        
-        isAnimating = true;
-        
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-        
-        animationFrame = requestAnimationFrame(updateCardPositions);
-    }
-
-    // Card interaction handlers
-    let openCard = null;
-    let backdrop = null;
-
-    function createBackdrop() {
-        backdrop = document.createElement('div');
-        backdrop.className = 'project-backdrop';
-        document.body.appendChild(backdrop);
-        
-        backdrop.addEventListener('click', closeAllProjectCards);
-        
-        // Force reflow and add active class
-        backdrop.offsetHeight;
-        backdrop.classList.add('active');
-    }
-
-    function removeBackdrop() {
-        if (backdrop) {
-            backdrop.classList.remove('active');
-            setTimeout(() => {
-                if (backdrop && backdrop.parentNode) {
-                    backdrop.parentNode.removeChild(backdrop);
-                }
-                backdrop = null;
-            }, 400);
-        }
-    }
-
-    function toggleProjectCard(card) {
-        if (openCard && openCard !== card) {
-            closeProjectCard(openCard);
-        }
-        
-        if (card.classList.contains('is-open')) {
-            closeProjectCard(card);
-        } else {
-            openProjectCard(card);
-        }
-    }
-
-    function openProjectCard(card) {
-        openCard = card;
-        card.classList.add('is-open');
-        card.setAttribute('aria-expanded', 'true');
-        
-        if (!backdrop) {
-            createBackdrop();
-        }
-        
-        // Disable scrolling
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeProjectCard(card) {
-        card.classList.remove('is-open');
-        card.setAttribute('aria-expanded', 'false');
-        
-        if (openCard === card) {
-            openCard = null;
-        }
-        
-        removeBackdrop();
-        
-        // Re-enable scrolling
-        document.body.style.overflow = '';
-    }
-
-    function closeAllProjectCards() {
-        projectCards.forEach(card => {
-            if (card.classList.contains('is-open')) {
-                closeProjectCard(card);
+            // Add/remove active class for the centered card
+            if (Math.abs(cardAngle) < angleStep / 2) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
             }
         });
+
+        // Update scroll direction indicator text when available
+        if (scrollDirectionIndicator) {
+            scrollDirectionIndicator.textContent = scrollDirection === 'down' ? '↓ SCROLL' : '↑ SCROLL';
+            scrollDirectionIndicator.className = `scroll-direction ${scrollDirection}`;
+        }
     }
 
-    // Event listeners
-    projectCards.forEach((card) => {
-        // Click handler
-        card.addEventListener('click', (e) => {
+    // Smoothly animate currentRotation towards targetRotation
+    function animateRotation() {
+        if (!isRotationAnimating) return;
+        const diff = targetRotation - currentRotation;
+        // small threshold to stop animation
+        if (Math.abs(diff) < 0.01) {
+            currentRotation = targetRotation;
+            renderAtRotation(currentRotation);
+            isRotationAnimating = false;
+            // Clear any scroll locking that was put in place by wheel snapping
+            if (lastWheelSnapped) {
+                isLockingScroll = false;
+                lastWheelSnapped = false;
+            }
+            return;
+        }
+        currentRotation += diff * rotationSmoothing;
+        renderAtRotation(currentRotation);
+        requestAnimationFrame(animateRotation);
+    }
+
+    // Advanced 3D Scroll Animation System
+    function update3DScrollAnimation() {
+        const sectionRect = projectsSection.getBoundingClientRect();
+        const sectionTop = sectionRect.top;
+        const sectionHeight = sectionRect.height;
+        const viewportHeight = window.innerHeight;
+        
+        // Calculate scroll progress through the section (0 to 1)
+        let scrollProgress = 0;
+        
+        if (sectionTop <= viewportHeight && sectionTop > -sectionHeight) {
+            // Calculate progress with offset to keep cards in view longer
+            const effectiveProgress = (viewportHeight - sectionTop) / sectionHeight;
+            // Use a slower curve for the middle portion of the scroll
+            scrollProgress = Math.pow(effectiveProgress * 0.6, 0.6); // Slower progression
+            scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+        } else if (sectionTop <= -sectionHeight) {
+            scrollProgress = 1;
+        }
+        
+        // Update scroll progress bar
+        if (scrollProgressBar) {
+            scrollProgressBar.style.height = `${scrollProgress * 100}%`;
+        }
+
+        // Set new targetRotation from scrollProgress; animation will smooth currentRotation -> targetRotation
+        const totalRotation = 120;
+        targetRotation = scrollProgress * totalRotation;
+
+        if (!isRotationAnimating) {
+            isRotationAnimating = true;
+            requestAnimationFrame(animateRotation);
+        }
+    }
+    
+    // Enhanced scroll event handler with throttling
+    function handleScroll() {
+        if (!isScrolling) {
+            isScrolling = true;
+            requestAnimationFrame(() => {
+                update3DScrollAnimation();
+                isScrolling = false;
+            });
+        }
+        
+        // Update scroll direction
+        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        scrollDirection = currentScrollTop > lastScrollTop ? 'down' : 'up';
+        lastScrollTop = currentScrollTop;
+        
+        // Clear previous timeout
+        clearTimeout(scrollTimeout);
+        
+        // Update scroll direction indicator after scroll stops
+        scrollTimeout = setTimeout(() => {
+            scrollDirectionIndicator?.classList.remove('up', 'down');
+        }, 150);
+    }
+    
+    // Throttled scroll event
+    let ticking = false;
+    function throttledScroll() {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+    
+    // Add scroll event listener
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+
+    // Intercept wheel events when inside the projects section to implement
+    // 'scroll-lock-until-snap' behavior: vertical scrolling is held while
+    // the carousel animates to the next/previous card, then normal scrolling resumes.
+    let isLockingScroll = false;
+    const SNAP_LOCK_MS = 650; // how long to lock vertical scrolling while snapping
+    let lastWheelSnapped = false;
+
+    function onWheelIntercept(e) {
+        // Only intercept vertical wheel events
+        if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+
+        const rect = projectsSection.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const centerY = viewportHeight / 2;
+        // Only intercept when the center of the viewport lies inside the projects section
+        const centerInside = (rect.top < centerY && rect.bottom > centerY);
+        if (!centerInside) return;
+
+        // If already locking, prevent default to block native scroll
+        if (isLockingScroll) {
             e.preventDefault();
             e.stopPropagation();
+            return;
+        }
+
+        const delta = e.deltaY;
+        const direction = delta > 0 ? 1 : -1; // 1 = scroll down -> next card
+
+        // Compute nearest index from currentRotation
+        const totalRotation = 120;
+        const cardCount = projectCards.length;
+        const angleStep = totalRotation / Math.max(cardCount - 1, 1);
+        const nearestIndex = Math.round(currentRotation / angleStep);
+        let targetIndex = nearestIndex + direction;
+        if (targetIndex < 0) targetIndex = 0;
+        if (targetIndex > cardCount - 1) targetIndex = cardCount - 1;
+
+        // If we're already at the edge and target equals nearest, do not intercept — allow page scroll
+        if (targetIndex === nearestIndex) return;
+
+        // Intercept this wheel to snap to next/prev card
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Mark that wheel initiated this snap (used to clear lock when animation finishes)
+        lastWheelSnapped = true;
+
+        // Set targetRotation and start animation
+        targetRotation = targetIndex * angleStep;
+        if (!isRotationAnimating) {
+            isRotationAnimating = true;
+            requestAnimationFrame(animateRotation);
+        }
+
+        // Lock native vertical scrolling until snap completes (fallback timeout in case animation doesn't finish)
+        isLockingScroll = true;
+        clearTimeout(snapTimeout);
+        snapTimeout = setTimeout(() => {
+            isLockingScroll = false;
+            lastWheelSnapped = false;
+        }, SNAP_LOCK_MS);
+    }
+
+    // Add wheel listener on window so we can prevent default; use non-passive
+    window.addEventListener('wheel', onWheelIntercept, { passive: false });
+    
+    // Initial call to set up initial state
+    update3DScrollAnimation();
+    
+    // Debug logging
+    console.log('Project cards initialized:', projectCards.length);
+    console.log('Projects section found:', !!projectsSection);
+    console.log('Scroll progress bar found:', !!scrollProgressBar);
+    console.log('Scroll direction indicator found:', !!scrollDirectionIndicator);
+    console.log('Initial 3D animation setup complete');
+    
+    // Click handler for card expansion
+    projectCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
             toggleProjectCard(card);
         });
-
-        // Keyboard handler
+        
+        // Keyboard navigation
         card.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -729,46 +786,52 @@ function initProjectCards() {
                 closeAllProjectCards();
             }
         });
-
-        // Simple hover effects
+        
+        // Enhanced hover effects
         card.addEventListener('mouseenter', () => {
-            if (!card.classList.contains('is-open')) {
-                card.style.boxShadow = '0 15px 30px rgba(50,184,198,0.2)';
-            }
+            enhanceHoverEffects(card);
         });
-
+        
         card.addEventListener('mouseleave', () => {
-            if (!card.classList.contains('is-open')) {
-                card.style.boxShadow = '';
-            }
+            resetHoverEffects(card);
+        });
+        
+        // Mouse tracking for magnetic effect
+        card.addEventListener('mousemove', (e) => {
+            trackMousePosition(card, e);
         });
     });
-
-    // Global escape key handler
+    
+    // Close cards when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.project-card') && !e.target.closest('.project-backdrop')) {
+            closeAllProjectCards();
+        }
+    });
+    
+    // Close cards on escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeAllProjectCards();
         }
     });
-
-    // Scroll event listener with passive flag for performance
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    // Resize handler
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            if (!isAnimating) {
-                updateCardPositions();
-            }
-        }, 100);
-    });
-
-    // Initialize on load
-    updateCardPositions();
     
-    console.log('Project cards initialized successfully');
+    // Intersection Observer for entrance animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                triggerCardAnimations(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    projectCards.forEach(card => observer.observe(card));
+    
+    // Resize handler for responsive adjustments
+    window.addEventListener('resize', () => {
+        update3DScrollAnimation();
+    });
 }
 
 // ===== PROJECT CARD INTERACTION FUNCTIONS =====
