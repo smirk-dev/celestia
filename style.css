@@ -327,7 +327,18 @@ html {
   font-family: var(--font-family-base);
   line-height: var(--line-height-normal);
   color: var(--color-text);
+  /* Fallback background color (kept for older browsers) */
   background-color: var(--color-background);
+  /* Site-wide gradient: black -> deep purple */
+  background-image: linear-gradient(180deg, #000000 0%, #120018 50%, #2b0f3a 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  /* Site-wide gradient: black -> deep purple */
+  background-image: linear-gradient(180deg, #000000 0%, #1a0026 55%, #2b0f3a 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
@@ -344,7 +355,11 @@ html, body {
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--color-background) !important;
+  /* Use the same gradient on body to ensure full-viewport coverage */
+  background: linear-gradient(180deg, #000000 0%, #1a0026 55%, #2b0f3a 100%) !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
 }
 
 *,
@@ -815,7 +830,8 @@ html {
 }
 
 body {
-    background-color: #2a2a2a;
+  /* Site-wide gradient: black -> deep purple */
+  background: linear-gradient(180deg, #000000 0%, #120018 50%, #2b0f3a 100%);
     color: #ffffff;
     font-family: var(--font-family-base);
     line-height: 1.6;
@@ -1256,8 +1272,8 @@ body {
 
 /* About Section */
 .about-section {
-    padding: 100px 0;
-    background-color: #2a2a2a;
+  padding: 100px 0;
+  background-color: transparent;
 }
 
 .about-content {
@@ -1287,8 +1303,8 @@ body {
 
 /* Services Section */
 .services-section {
-    padding: 100px 0;
-    background-color: #1a1a1a;
+  padding: 100px 0;
+  background-color: transparent;
 }
 
 .services-description {
@@ -1470,16 +1486,16 @@ body {
 
 /* Projects and Contact Sections */
 .projects-section {
-    padding: 100px 0 50px 0; /* Less bottom padding since grid has its own height */
-    background-color: #2a2a2a;
-    text-align: center;
-    position: relative;
+  padding: 100px 0 50px 0; /* Less bottom padding since grid has its own height */
+  background-color: transparent;
+  text-align: center;
+  position: relative;
 }
 
 .contact-section {
-    padding: 100px 0;
-    background-color: #2a2a2a;
-    text-align: center;
+  padding: 100px 0;
+  background-color: transparent;
+  text-align: center;
 }
 
 .projects-section p,
@@ -1685,11 +1701,12 @@ body {
   }
 }
 
-/* Force entire site background to pure black and remove section gradients */
+/* Disabled: Force-black rule removed so site-wide gradient can show through.
+   If you need to re-enable a hard-black background for specific pages, target
+   those selectors individually rather than using this global override. */
 html, body, main, .main-content, section, .hero-section, .about-section, .services-section,
 .projects-section, .contact-section, .container {
-  background: #000000 !important;
-  background-image: none !important;
+  background: transparent !important;
 }
 
 /* Ensure text remains visible on forced black background */
@@ -2468,4 +2485,17 @@ section {
   opacity: 0.4;
   filter: blur(2px);
   z-index: 1;
+}
+
+/* Final override: enforce site-wide black -> purple gradient so it shows through all sections.
+   This uses !important to beat any late-loaded or specific rules that force a solid black. */
+:root {
+  --site-gradient: linear-gradient(180deg, #000000 0%, #120018 50%, #2b0f3a 100%);
+}
+html, body, main, .main-content, section, .container {
+  background-image: var(--site-gradient) !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
 }
