@@ -329,13 +329,13 @@ html {
   color: var(--color-text);
   /* Fallback background color (kept for older browsers) */
   background-color: var(--color-background);
-  /* Site-wide gradient: black -> deep purple */
-  background-image: linear-gradient(180deg, #000000 0%, #120018 50%, #2b0f3a 100%);
+  /* Site-wide gradient: black -> deep (darker) purple */
+  background-image: linear-gradient(180deg, #000000 0%, #0b0012 50%, #1b0728 100%);
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  /* Site-wide gradient: black -> deep purple */
-  background-image: linear-gradient(180deg, #000000 0%, #1a0026 55%, #2b0f3a 100%);
+  /* Site-wide gradient: black -> deep (darker) purple */
+  background-image: linear-gradient(180deg, #000000 0%, #0b0012 55%, #1b0728 100%);
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
@@ -356,7 +356,7 @@ body {
   margin: 0;
   padding: 0;
   /* Use the same gradient on body to ensure full-viewport coverage */
-  background: linear-gradient(180deg, #000000 0%, #1a0026 55%, #2b0f3a 100%) !important;
+  background: linear-gradient(180deg, #000000 0%, #0b0012 55%, #1b0728 100%) !important;
   background-repeat: no-repeat !important;
   background-attachment: fixed !important;
   background-size: cover !important;
@@ -2462,7 +2462,7 @@ section {
 /* Final override: enforce site-wide black -> purple gradient so it shows through all sections.
    This uses !important to beat any late-loaded or specific rules that force a solid black. */
 :root {
-  --site-gradient: linear-gradient(180deg, #000000 0%, #120018 50%, #2b0f3a 100%);
+  --site-gradient: linear-gradient(180deg, #000000 0%, #0b0012 50%, #1b0728 100%);
 }
 html, body, main, .main-content, section, .container {
   background-image: var(--site-gradient) !important;
