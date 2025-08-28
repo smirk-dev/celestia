@@ -2471,3 +2471,30 @@ html, body, main, .main-content, section, .container {
   background-attachment: fixed !important;
   background-size: cover !important;
 }
+
+
+/* Last-resort: force the hero GIF to be a fixed, identical size across all screens.
+   This override neutralizes transforms and responsive rules applied earlier. */
+.hero-3d-placeholder, .hero-3d-placeholder * {
+  width: 560px !important;
+  height: 560px !important;
+  min-width: 560px !important;
+  min-height: 560px !important;
+  max-width: 560px !important;
+  max-height: 560px !important;
+  /* keep layout positioning but allow the GIF itself to receive transforms below */
+  margin: 0 auto !important;
+  position: relative !important;
+  overflow: hidden !important; /* crop the zoomed/rotated gif */
+}
+.hero-gif, .hero-3d-placeholder > img {
+  width: 720px !important; /* zoomed size (1.29x of 560) to appear bigger */
+  height: 720px !important;
+  object-fit: cover !important; /* cover ensures zoom focuses on center */
+  object-position: center center !important;
+  max-width: 720px !important;
+  max-height: 720px !important;
+  transform: rotate(30deg) scale(0.8) !important; /* tilt and zoom */
+  transform-origin: center center !important;
+  will-change: transform !important;
+}
