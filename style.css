@@ -2511,11 +2511,11 @@ section {
 }
 
 /* Initial positioning for cards before JavaScript loads */
-.project-card:nth-child(1) {
+.project-card:nth-child(2) {
   transform: 
     translate(-50%, -50%)
     translateZ(800px)
-    translateX(0px)
+  translateX(1100px)
     rotateY(0deg)
     rotateX(0deg)
     scale(1);
@@ -2541,7 +2541,7 @@ section {
   transform: 
     translate(-50%, -50%)
     translateZ(-400px)
-    translateX(693px)
+  translateX(1100px)
     rotateY(-120deg)
     rotateX(0deg)
     scale(0.6);
