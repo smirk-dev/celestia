@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initContactForm();
     initProjectCards(); // Initialize project cards
     addProjectCardAnimations(); // Add CSS animations
+    initParticles(); // lightweight canvas particle background (non-blocking)
 });
 
 /* ------------------------- Navigation ------------------------- */
@@ -399,6 +400,117 @@ function initNavigationFallback() {
 
 // Initialize fallback if needed
 initNavigationFallback();
+
+/* ------------------------- Particles (lightweight canvas) ------------------------- */
+function initParticles() {
+    // Avoid adding particles if the browser can't handle canvas or if user prefers reduced motion
+    if (!window.HTMLCanvasElement) return;
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    // Don't duplicate canvas if already present
+    if (document.getElementById('celestia-particles-canvas')) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'celestia-particles-canvas';
+    canvas.style.position = 'fixed';
+    canvas.style.left = '0';
+    canvas.style.top = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '0'; // sits behind normal content (which tends to be z-index:auto/1+)
+    canvas.style.mixBlendMode = 'screen';
+    canvas.style.opacity = '0.12';
+    document.body.insertBefore(canvas, document.body.firstChild);
+
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth;
+    let H = canvas.height = window.innerHeight;
+
+    const PARTICLE_COUNT = Math.max(18, Math.floor((W * H) / 90000)); // density scales with viewport
+    const particles = [];
+
+    function rand(min, max) { return Math.random() * (max - min) + min; }
+
+    function initParticle(p) {
+        p.x = rand(0, W);
+        p.y = rand(0, H);
+        p.radius = rand(0.6, 2.2);
+        p.vx = rand(-0.05, 0.05);
+        p.vy = rand(-0.02, 0.02);
+        p.alpha = rand(0.05, 0.18);
+        p.color = `rgba(210,220,255,${p.alpha})`; // soft cool tint to match nebula
+        p.phase = rand(0, Math.PI * 2);
+        p.phaseSpeed = rand(0.0005, 0.002);
+    }
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const p = {};
+        initParticle(p);
+        particles.push(p);
+    }
+
+    let last = performance.now();
+    function step(now) {
+        const dt = Math.min(64, now - last);
+        last = now;
+        ctx.clearRect(0, 0, W, H);
+
+        for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            // gentle drift + slow bobbing via sin
+            p.x += p.vx * dt * 0.06;
+            p.y += p.vy * dt * 0.06 + Math.sin(p.phase) * 0.02;
+            p.phase += p.phaseSpeed * dt;
+
+            // wrap-around edges to keep density consistent
+            if (p.x < -20) p.x = W + 20;
+            if (p.x > W + 20) p.x = -20;
+            if (p.y < -20) p.y = H + 20;
+            if (p.y > H + 20) p.y = -20;
+
+            // draw soft circle
+            const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 8);
+            g.addColorStop(0, `rgba(255,255,255,${p.alpha})`);
+            g.addColorStop(0.25, `rgba(200,210,255,${p.alpha * 0.6})`);
+            g.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius * 8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // very subtle global parallax based on scroll position (small shift)
+        const shift = (window.scrollY / Math.max(1, document.body.scrollHeight - window.innerHeight)) * 18 - 9; // -9..9px
+        canvas.style.transform = `translateY(${shift}px)`;
+
+        // throttle drawing frequency to keep CPU low on small devices
+        requestAnimationFrame(step);
+    }
+
+    // resize handling
+    function onResize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        // re-balance particle count gently
+        const desired = Math.max(12, Math.floor((W * H) / 90000));
+        while (particles.length < desired) { const p = {}; initParticle(p); particles.push(p); }
+        while (particles.length > desired) particles.pop();
+    }
+
+    window.addEventListener('resize', onResize, { passive: true });
+
+    // stop animation when page hidden to save battery
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) cancelAnimationFrame(step);
+        else { last = performance.now(); requestAnimationFrame(step); }
+    });
+
+    // start
+    requestAnimationFrame(step);
+}
+
 
 /* ------------------------- Project video lazy-load & autoplay ------------------------- */
 function initProjectVideoHandlers() {
