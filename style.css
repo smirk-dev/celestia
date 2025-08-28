@@ -1709,7 +1709,7 @@ section {
 /* Projects Grid Layout - Updated for Semi-Circular Scroll */
 .projects-grid {
   position: relative;
-  height: 500vh; /* Extended height for slower scroll animation */
+  height: 300vh; /* Extended height for slower scroll animation */
   overflow: visible;
   margin-bottom: 100px;
   padding-top: 100px; /* Space for title */
@@ -1746,11 +1746,11 @@ section {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 380px;
-  height: 480px;
+  width: 720px;
+  height: 400px;
   background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
+  border-radius: 32px;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
@@ -1891,10 +1891,11 @@ section {
 /* Responsive adjustments for 3D scroll */
 @media (max-width: 1200px) {
   .project-card {
-    width: 340px;
-    height: 420px;
+    width: 96vw;
+    height: 320px;
+    max-width: 98vw;
+    border-radius: 24px;
   }
-  
   .projects-grid {
     height: 350vh; /* Adjusted for medium screens */
   }
@@ -1902,14 +1903,14 @@ section {
 
 @media (max-width: 768px) {
   .project-card {
-    width: 300px;
-    height: 380px;
+    width: 99vw;
+    height: 220px;
+    max-width: 100vw;
+    border-radius: 16px;
   }
-  
   .projects-grid {
     height: 250vh; /* Shorter on mobile */
   }
-  
   .projects-scroll-container {
     top: 60%; /* Adjust position on mobile */
   }
@@ -2489,10 +2490,10 @@ section {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1.1) !important;
-  width: 90vw;
-  height: 90vh;
-  max-width: 1200px;
-  max-height: 800px;
+  width: 96vw;
+  height: 72vh;
+  max-width: 1600px;
+  max-height: 900px;
   z-index: 10000;
   background: rgba(0,0,0,0.95);
   backdrop-filter: blur(20px);
