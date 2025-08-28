@@ -757,8 +757,11 @@ function initProjectCards() {
         }, SNAP_LOCK_MS);
     }
 
-    // Add wheel listener on window so we can prevent default; use non-passive
-    window.addEventListener('wheel', onWheelIntercept, { passive: false });
+    // Wheel interception (non-passive) caused the page to lock while snapping on some browsers.
+    // To avoid blocking native vertical scrolling and improve UX, we no longer intercept wheel events here.
+    // The 3D rotation is driven from the scroll position via update3DScrollAnimation(), so native scrolling will update the carousel.
+    // If you need snap-on-wheel behavior later, re-enable the listener below and tune SNAP_LOCK_MS to taste.
+    // window.addEventListener('wheel', onWheelIntercept, { passive: false });
     
     // Initial call to set up initial state
     update3DScrollAnimation();
