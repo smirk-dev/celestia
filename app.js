@@ -517,8 +517,7 @@ function removeProjectBackdrop() {
 /* ===== INNOVATIVE PROJECT CARDS FUNCTIONALITY ===== */
 function initProjectCards() {
     const projectCards = document.querySelectorAll('.project-card');
-    const scrollProgressBar = document.querySelector('.scroll-progress-fill');
-    const scrollDirectionIndicator = document.querySelector('.scroll-direction');
+    const scrollProgressFill = document.querySelector('.scroll-progress-fill');
     const projectsSection = document.querySelector('#projects');
     
     if (!projectCards.length || !projectsSection) {
@@ -526,135 +525,194 @@ function initProjectCards() {
         return;
     }
 
-    let lastScrollTop = 0;
-    let scrollDirection = 'down';
-    let isScrolling = false;
+    // State management
+    let isAnimating = false;
     let animationFrame = null;
+    let lastScrollY = 0;
     
-    // Pre-calculate constants
-    const cardCount = projectCards.length;
-    const totalRotation = 100; // Reduced for better performance
-    const angleStep = totalRotation / Math.max(cardCount - 1, 1);
-    const radius = 700; // Optimized radius
+    // Configuration
+    const config = {
+        cardCount: projectCards.length,
+        radius: 600,
+        maxRotation: 120, // Total rotation range in degrees
+        minScale: 0.5,
+        maxScale: 1,
+        minOpacity: 0.2,
+        maxOpacity: 1
+    };
     
-    // Cache DOM references and initial setup
+    config.angleStep = config.maxRotation / Math.max(config.cardCount - 1, 1);
+
+    // Initialize cards
     projectCards.forEach((card, index) => {
         card.setAttribute('tabindex', '0');
         card.setAttribute('role', 'button');
         card.setAttribute('aria-expanded', 'false');
-        card.style.willChange = 'transform, opacity, filter'; // Optimize for transforms
-        card.dataset.index = index; // Cache index
+        card.dataset.index = index;
+        
+        // Set initial transform to prevent flash
+        card.style.transform = `translate(-50%, -50%) translateZ(-${config.radius}px) scale(${config.minScale})`;
+        card.style.opacity = config.minOpacity;
     });
 
-    // Optimized 3D animation function
-    function update3DScrollAnimation() {
+    // Optimized scroll progress calculation
+    function getScrollProgress() {
         const rect = projectsSection.getBoundingClientRect();
-        const sectionTop = rect.top;
-        const sectionHeight = rect.height;
-        const viewportHeight = window.innerHeight;
-
-        // Simplified scroll progress calculation
-        let scrollProgress = 0;
-        if (sectionTop <= viewportHeight && sectionTop > -sectionHeight) {
-            scrollProgress = Math.max(0, Math.min(1, (viewportHeight - sectionTop) / (sectionHeight * 0.8)));
-        } else if (sectionTop <= -sectionHeight) {
-            scrollProgress = 1;
-        }
-
-        // Update scroll progress bar (throttled)
-        if (scrollProgressBar) {
-            scrollProgressBar.style.transform = `scaleY(${scrollProgress})`;
-        }
-
-        // Current rotation based on scroll progress
-        const currentRotation = scrollProgress * totalRotation;
-
-        // Batch DOM updates
-        const transformUpdates = [];
+        const windowHeight = window.innerHeight;
         
-        projectCards.forEach((card, index) => {
-            const cardAngle = index * angleStep - currentRotation;
-            const cardAngleRad = (cardAngle * Math.PI) / 180;
-
-            // Optimized position calculations
-            const xPos = radius * Math.sin(cardAngleRad);
-            const zPos = radius * Math.cos(cardAngleRad) - radius;
-            
-            // Simplified scale and opacity calculations
-            const normalizedZ = (zPos + radius) / radius;
-            const scale = 0.6 + (0.4 * normalizedZ);
-            const opacity = Math.max(0.3, Math.min(1, 1 - (Math.abs(cardAngle) / 90) * 0.7));
-            
-            // Reduced blur for better performance
-            const blur = Math.max(0, (1 - normalizedZ) * 2);
-
-            // Single transform string
-            const transform = `translate3d(${xPos.toFixed(1)}px, 0px, ${zPos.toFixed(1)}px) rotateY(${(-cardAngle).toFixed(1)}deg) scale(${scale.toFixed(3)})`;
-            
-            transformUpdates.push({
-                card,
-                transform,
-                opacity: opacity.toFixed(3),
-                filter: `blur(${blur.toFixed(1)}px)`,
-                zIndex: Math.round(normalizedZ * 100),
-                isActive: Math.abs(cardAngle) < angleStep * 0.6
-            });
-        });
-
-        // Apply all transforms in a single batch
-        transformUpdates.forEach(({ card, transform, opacity, filter, zIndex, isActive }) => {
-            card.style.transform = transform;
-            card.style.opacity = opacity;
-            card.style.filter = filter;
-            card.style.zIndex = zIndex;
-            
-            if (isActive) {
-                card.classList.add('active');
-            } else {
-                card.classList.remove('active');
-            }
-        });
-
-        isScrolling = false;
+        // Start animation when section enters viewport
+        const startY = windowHeight;
+        const endY = -rect.height + windowHeight;
+        
+        if (rect.top > startY) return 0;
+        if (rect.top < endY) return 1;
+        
+        return (startY - rect.top) / (startY - endY);
     }
 
-    // Optimized scroll handler with better throttling
+    // Main animation function - simplified and optimized
+    function updateCardPositions() {
+        const scrollProgress = getScrollProgress();
+        
+        // Update progress bar
+        if (scrollProgressFill) {
+            scrollProgressFill.style.height = `${scrollProgress * 100}%`;
+        }
+        
+        // Calculate current rotation offset
+        const rotationOffset = scrollProgress * config.maxRotation;
+        
+        // Update each card
+        projectCards.forEach((card, index) => {
+            // Calculate this card's angle
+            const baseAngle = index * config.angleStep;
+            const currentAngle = baseAngle - rotationOffset;
+            const angleRad = (currentAngle * Math.PI) / 180;
+            
+            // Calculate position on the arc
+            const x = Math.sin(angleRad) * config.radius;
+            const z = (Math.cos(angleRad) - 1) * config.radius;
+            
+            // Calculate scale based on Z position (closer = larger)
+            const normalizedZ = (z + config.radius) / config.radius;
+            const scale = config.minScale + (config.maxScale - config.minScale) * normalizedZ;
+            
+            // Calculate opacity based on angle from center
+            const angleFromCenter = Math.abs(currentAngle);
+            const maxAngleForVisibility = config.angleStep * 2;
+            const opacityFactor = Math.max(0, 1 - (angleFromCenter / maxAngleForVisibility));
+            const opacity = config.minOpacity + (config.maxOpacity - config.minOpacity) * opacityFactor;
+            
+            // Calculate blur for depth effect
+            const blur = (1 - normalizedZ) * 2;
+            
+            // Apply transform as a single operation
+            const transform = `translate(-50%, -50%) translate3d(${x.toFixed(1)}px, 0, ${z.toFixed(1)}px) rotateY(${(-currentAngle).toFixed(1)}deg) scale(${scale.toFixed(3)})`;
+            
+            // Batch DOM updates
+            card.style.transform = transform;
+            card.style.opacity = opacity.toFixed(3);
+            card.style.filter = `blur(${blur.toFixed(1)}px)`;
+            card.style.zIndex = Math.round(normalizedZ * 100);
+            
+            // Update active state
+            const isActive = Math.abs(currentAngle) < config.angleStep * 0.7;
+            card.classList.toggle('active', isActive);
+        });
+        
+        isAnimating = false;
+    }
+
+    // Throttled scroll handler
     function handleScroll() {
+        if (isAnimating) return;
+        
+        isAnimating = true;
+        
         if (animationFrame) {
             cancelAnimationFrame(animationFrame);
         }
         
-        animationFrame = requestAnimationFrame(() => {
-            const currentScrollTop = window.pageYOffset;
-            scrollDirection = currentScrollTop > lastScrollTop ? 'down' : 'up';
-            lastScrollTop = currentScrollTop;
+        animationFrame = requestAnimationFrame(updateCardPositions);
+    }
 
-            // Update direction indicator
-            if (scrollDirectionIndicator) {
-                scrollDirectionIndicator.textContent = scrollDirection === 'down' ? '↓ SCROLL' : '↑ SCROLL';
-                scrollDirectionIndicator.className = `scroll-direction ${scrollDirection}`;
+    // Card interaction handlers
+    let openCard = null;
+    let backdrop = null;
+
+    function createBackdrop() {
+        backdrop = document.createElement('div');
+        backdrop.className = 'project-backdrop';
+        document.body.appendChild(backdrop);
+        
+        backdrop.addEventListener('click', closeAllProjectCards);
+        
+        // Force reflow and add active class
+        backdrop.offsetHeight;
+        backdrop.classList.add('active');
+    }
+
+    function removeBackdrop() {
+        if (backdrop) {
+            backdrop.classList.remove('active');
+            setTimeout(() => {
+                if (backdrop && backdrop.parentNode) {
+                    backdrop.parentNode.removeChild(backdrop);
+                }
+                backdrop = null;
+            }, 400);
+        }
+    }
+
+    function toggleProjectCard(card) {
+        if (openCard && openCard !== card) {
+            closeProjectCard(openCard);
+        }
+        
+        if (card.classList.contains('is-open')) {
+            closeProjectCard(card);
+        } else {
+            openProjectCard(card);
+        }
+    }
+
+    function openProjectCard(card) {
+        openCard = card;
+        card.classList.add('is-open');
+        card.setAttribute('aria-expanded', 'true');
+        
+        if (!backdrop) {
+            createBackdrop();
+        }
+        
+        // Disable scrolling
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeProjectCard(card) {
+        card.classList.remove('is-open');
+        card.setAttribute('aria-expanded', 'false');
+        
+        if (openCard === card) {
+            openCard = null;
+        }
+        
+        removeBackdrop();
+        
+        // Re-enable scrolling
+        document.body.style.overflow = '';
+    }
+
+    function closeAllProjectCards() {
+        projectCards.forEach(card => {
+            if (card.classList.contains('is-open')) {
+                closeProjectCard(card);
             }
-
-            update3DScrollAnimation();
         });
     }
 
-    // Passive scroll listener for better performance
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        handleScroll();
-        
-        // Remove active states after scrolling stops
-        scrollTimeout = setTimeout(() => {
-            if (scrollDirectionIndicator) {
-                scrollDirectionIndicator.classList.remove('up', 'down');
-            }
-        }, 150);
-    }, { passive: true });
-
-    // Enhanced interaction handlers
-    projectCards.forEach((card, index) => {
+    // Event listeners
+    projectCards.forEach((card) => {
         // Click handler
         card.addEventListener('click', (e) => {
             e.preventDefault();
@@ -662,7 +720,7 @@ function initProjectCards() {
             toggleProjectCard(card);
         });
 
-        // Keyboard navigation
+        // Keyboard handler
         card.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -672,58 +730,45 @@ function initProjectCards() {
             }
         });
 
-        // Optimized hover effects
-        let hoverTimeout;
+        // Simple hover effects
         card.addEventListener('mouseenter', () => {
-            clearTimeout(hoverTimeout);
-            card.style.transition = 'box-shadow 0.3s ease, transform 0.3s ease';
-            card.style.boxShadow = '0 20px 40px rgba(50,184,198,0.3)';
+            if (!card.classList.contains('is-open')) {
+                card.style.boxShadow = '0 15px 30px rgba(50,184,198,0.2)';
+            }
         });
 
         card.addEventListener('mouseleave', () => {
-            hoverTimeout = setTimeout(() => {
+            if (!card.classList.contains('is-open')) {
                 card.style.boxShadow = '';
-            }, 100);
+            }
         });
     });
 
-    // Optimized resize handler
+    // Global escape key handler
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeAllProjectCards();
+        }
+    });
+
+    // Scroll event listener with passive flag for performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Resize handler
     let resizeTimeout;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            update3DScrollAnimation();
-        }, 150);
-    });
-
-    // Intersection Observer for better performance
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
+            if (!isAnimating) {
+                updateCardPositions();
             }
-        });
-    }, { 
-        threshold: 0.1, 
-        rootMargin: '50px 0px' 
+        }, 100);
     });
 
-    projectCards.forEach(card => observer.observe(card));
-
-    // Initial setup
-    requestAnimationFrame(() => {
-        update3DScrollAnimation();
-    });
-
-    // Cleanup function for memory management
-    return () => {
-        if (animationFrame) {
-            cancelAnimationFrame(animationFrame);
-        }
-        observer.disconnect();
-        window.removeEventListener('scroll', handleScroll);
-        window.removeEventListener('resize', () => update3DScrollAnimation());
-    };
+    // Initialize on load
+    updateCardPositions();
+    
+    console.log('Project cards initialized successfully');
 }
 
 // ===== PROJECT CARD INTERACTION FUNCTIONS =====
