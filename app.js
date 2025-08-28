@@ -313,9 +313,10 @@ async function openServiceModal(sourceVideo) {
     modalVideo.className = 'service-modal__video';
     modalVideo.controls = false;
     modalVideo.playsInline = true;
-    modalVideo.muted = true;
+    // inherit muted/autoplay/loop from source when available so preview behavior matches
+    modalVideo.muted = sourceVideo?.muted ?? true;
     modalVideo.autoplay = true;
-    modalVideo.loop = false;
+    modalVideo.loop = !!(sourceVideo && sourceVideo.loop);
     // suppress native controls across browsers
     try { modalVideo.disablePictureInPicture = true; } catch(e) {}
     modalVideo.setAttribute('controlsList', 'nodownload noplaybackrate noremoteplayback nofullscreen');
