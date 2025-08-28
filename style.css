@@ -1154,7 +1154,9 @@ body {
 
 .hero-3d-placeholder {
   /* slightly reduced from extreme: large but more moderate hero */
-  width: clamp(820px, 72vw, 1800px); /* reduced baseline and max */
+  box-sizing: border-box; /* ensure padding doesn't break sizing */
+  padding-top: 12px; /* a little extra space above the GIF */
+  width: clamp(760px, 68vw, 1600px); /* slightly smaller baseline and max */
   aspect-ratio: 1 / 1;
   background: transparent;
   border: none !important;
@@ -1185,7 +1187,7 @@ body {
 
 /* GIF inside hero placeholder (shrunk by default) */
 .hero-gif {
-  width: 160%; /* reduced GIF size for a more balanced appearance */
+  width: 150%; /* just a little smaller */
   height: auto;
   max-width: none; /* allow very large displays if container allows */
   max-height: none;
@@ -1196,22 +1198,22 @@ body {
 
 @media (max-width: 1600px) {
   .hero-3d-placeholder { width: clamp(600px, 62vw, 1200px); }
-  .hero-gif { width: 140%; }
+  .hero-gif { width: 130%; }
 }
 
 @media (max-width: 1200px) {
   .hero-3d-placeholder { width: clamp(420px, 62vw, 880px); }
-  .hero-gif { width: 110%; }
+  .hero-gif { width: 105%; }
 }
 
 @media (max-width: 800px) {
   .hero-3d-placeholder { width: clamp(320px, 80vw, 680px); }
-  .hero-gif { width: 98%; }
+  .hero-gif { width: 95%; }
 }
 
 @media (min-width: 2200px) {
   .hero-3d-placeholder { width: clamp(1000px, 70vw, 2600px); }
-  .hero-gif { width: 200%; }
+  .hero-gif { width: 180%; }
 }
 
 .placeholder-content {
