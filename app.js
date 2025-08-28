@@ -521,163 +521,147 @@ function initProjectCards() {
     const scrollDirectionIndicator = document.querySelector('.scroll-direction');
     const projectsSection = document.querySelector('#projects');
     
+    if (!projectCards.length || !projectsSection) {
+        console.warn('Project cards or section not found');
+        return;
+    }
+
     let lastScrollTop = 0;
     let scrollDirection = 'down';
     let isScrolling = false;
-    let scrollTimeout;
-
-    // Add ARIA attributes for accessibility
-    projectCards.forEach(card => {
+    let animationFrame = null;
+    
+    // Pre-calculate constants
+    const cardCount = projectCards.length;
+    const totalRotation = 100; // Reduced for better performance
+    const angleStep = totalRotation / Math.max(cardCount - 1, 1);
+    const radius = 700; // Optimized radius
+    
+    // Cache DOM references and initial setup
+    projectCards.forEach((card, index) => {
         card.setAttribute('tabindex', '0');
         card.setAttribute('role', 'button');
         card.setAttribute('aria-expanded', 'false');
+        card.style.willChange = 'transform, opacity, filter'; // Optimize for transforms
+        card.dataset.index = index; // Cache index
     });
 
-    // Advanced 3D Scroll Animation System
+    // Optimized 3D animation function
     function update3DScrollAnimation() {
-        const sectionRect = projectsSection.getBoundingClientRect();
-        const sectionTop = sectionRect.top;
-        const sectionHeight = sectionRect.height;
+        const rect = projectsSection.getBoundingClientRect();
+        const sectionTop = rect.top;
+        const sectionHeight = rect.height;
         const viewportHeight = window.innerHeight;
-        
-        // Calculate scroll progress through the section (0 to 1)
+
+        // Simplified scroll progress calculation
         let scrollProgress = 0;
-        
         if (sectionTop <= viewportHeight && sectionTop > -sectionHeight) {
-            // Calculate progress with offset to keep cards in view longer
-            const effectiveProgress = (viewportHeight - sectionTop) / sectionHeight;
-            // Use a slower curve for the middle portion of the scroll
-            scrollProgress = Math.pow(effectiveProgress * 0.6, 0.6); // Slower progression
-            scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+            scrollProgress = Math.max(0, Math.min(1, (viewportHeight - sectionTop) / (sectionHeight * 0.8)));
         } else if (sectionTop <= -sectionHeight) {
             scrollProgress = 1;
         }
-        
-        // Update scroll progress bar
+
+        // Update scroll progress bar (throttled)
         if (scrollProgressBar) {
-            scrollProgressBar.style.height = `${scrollProgress * 100}%`;
+            scrollProgressBar.style.transform = `scaleY(${scrollProgress})`;
         }
-        
-        // Total rotation for the carousel (120 degrees for tighter semi-circle)
-        const totalRotation = 120; // Reduced from 180 to keep cards more visible
-        const cardCount = projectCards.length;
-        const angleStep = totalRotation / (cardCount - 1); // Angle between cards
-        
+
         // Current rotation based on scroll progress
         const currentRotation = scrollProgress * totalRotation;
+
+        // Batch DOM updates
+        const transformUpdates = [];
         
-        // Update card states based on scroll position
         projectCards.forEach((card, index) => {
-            // Calculate this card's angle on the semi-circle
             const cardAngle = index * angleStep - currentRotation;
             const cardAngleRad = (cardAngle * Math.PI) / 180;
-            
-            // Radius of the semi-circular path (increased to space cards further apart)
-            const radius = 900; // larger radius for wider spacing
-            
-            // Calculate position on the semi-circle
+
+            // Optimized position calculations
             const xPos = radius * Math.sin(cardAngleRad);
-            const zPos = radius * Math.cos(cardAngleRad) - radius; // Offset to center
-            const yPos = 50; // Slight downward offset to position below title
+            const zPos = radius * Math.cos(cardAngleRad) - radius;
             
-            // Calculate scale based on z-position (cards further back are smaller)
-            const scale = 0.5 + (0.5 * ((zPos + radius) / radius));
+            // Simplified scale and opacity calculations
+            const normalizedZ = (zPos + radius) / radius;
+            const scale = 0.6 + (0.4 * normalizedZ);
+            const opacity = Math.max(0.3, Math.min(1, 1 - (Math.abs(cardAngle) / 90) * 0.7));
             
-            // Calculate opacity based on angle (cards at edges fade out)
-            let opacity = 1;
-            const angleDiff = Math.abs(cardAngle);
-            if (angleDiff > 60) { // Start fading earlier
-                opacity = Math.max(0.3, 1 - ((angleDiff - 60) / 60)); // Keep minimum opacity higher
-            }
+            // Reduced blur for better performance
+            const blur = Math.max(0, (1 - normalizedZ) * 2);
+
+            // Single transform string
+            const transform = `translate3d(${xPos.toFixed(1)}px, 0px, ${zPos.toFixed(1)}px) rotateY(${(-cardAngle).toFixed(1)}deg) scale(${scale.toFixed(3)})`;
             
-            // Apply blur for depth effect
-            const blur = Math.max(0, (radius - (zPos + radius)) / radius * 3);
-            
-            // Construct the transform
-            const transform = `
-                translate(-50%, -50%)
-                translate3d(${xPos}px, ${yPos}px, ${zPos}px)
-                rotateY(${-cardAngle}deg)
-                scale(${scale})
-            `;
-            
-            // Apply styles
+            transformUpdates.push({
+                card,
+                transform,
+                opacity: opacity.toFixed(3),
+                filter: `blur(${blur.toFixed(1)}px)`,
+                zIndex: Math.round(normalizedZ * 100),
+                isActive: Math.abs(cardAngle) < angleStep * 0.6
+            });
+        });
+
+        // Apply all transforms in a single batch
+        transformUpdates.forEach(({ card, transform, opacity, filter, zIndex, isActive }) => {
             card.style.transform = transform;
             card.style.opacity = opacity;
-            card.style.filter = `blur(${blur}px)`;
-            card.style.zIndex = Math.round((zPos + radius) * 10);
+            card.style.filter = filter;
+            card.style.zIndex = zIndex;
             
-            // Add/remove active class for the centered card
-            if (Math.abs(cardAngle) < angleStep / 2) {
+            if (isActive) {
                 card.classList.add('active');
             } else {
                 card.classList.remove('active');
             }
         });
-        
-        // Update scroll direction indicator
-        if (scrollDirectionIndicator) {
-            scrollDirectionIndicator.textContent = scrollDirection === 'down' ? '↓ SCROLL' : '↑ SCROLL';
-            scrollDirectionIndicator.className = `scroll-direction ${scrollDirection}`;
-        }
+
+        isScrolling = false;
     }
-    
-    // Enhanced scroll event handler with throttling
+
+    // Optimized scroll handler with better throttling
     function handleScroll() {
-        if (!isScrolling) {
-            isScrolling = true;
-            requestAnimationFrame(() => {
-                update3DScrollAnimation();
-                isScrolling = false;
-            });
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
         }
         
-        // Update scroll direction
-        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        scrollDirection = currentScrollTop > lastScrollTop ? 'down' : 'up';
-        lastScrollTop = currentScrollTop;
-        
-        // Clear previous timeout
+        animationFrame = requestAnimationFrame(() => {
+            const currentScrollTop = window.pageYOffset;
+            scrollDirection = currentScrollTop > lastScrollTop ? 'down' : 'up';
+            lastScrollTop = currentScrollTop;
+
+            // Update direction indicator
+            if (scrollDirectionIndicator) {
+                scrollDirectionIndicator.textContent = scrollDirection === 'down' ? '↓ SCROLL' : '↑ SCROLL';
+                scrollDirectionIndicator.className = `scroll-direction ${scrollDirection}`;
+            }
+
+            update3DScrollAnimation();
+        });
+    }
+
+    // Passive scroll listener for better performance
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
         clearTimeout(scrollTimeout);
+        handleScroll();
         
-        // Update scroll direction indicator after scroll stops
+        // Remove active states after scrolling stops
         scrollTimeout = setTimeout(() => {
-            scrollDirectionIndicator?.classList.remove('up', 'down');
+            if (scrollDirectionIndicator) {
+                scrollDirectionIndicator.classList.remove('up', 'down');
+            }
         }, 150);
-    }
-    
-    // Throttled scroll event
-    let ticking = false;
-    function throttledScroll() {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                handleScroll();
-                ticking = false;
-            });
-            ticking = true;
-        }
-    }
-    
-    // Add scroll event listener
-    window.addEventListener('scroll', throttledScroll, { passive: true });
-    
-    // Initial call to set up initial state
-    update3DScrollAnimation();
-    
-    // Debug logging
-    console.log('Project cards initialized:', projectCards.length);
-    console.log('Projects section found:', !!projectsSection);
-    console.log('Scroll progress bar found:', !!scrollProgressBar);
-    console.log('Scroll direction indicator found:', !!scrollDirectionIndicator);
-    console.log('Initial 3D animation setup complete');
-    
-    // Click handler for card expansion
-    projectCards.forEach(card => {
+    }, { passive: true });
+
+    // Enhanced interaction handlers
+    projectCards.forEach((card, index) => {
+        // Click handler
         card.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             toggleProjectCard(card);
         });
-        
+
         // Keyboard navigation
         card.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -687,52 +671,59 @@ function initProjectCards() {
                 closeAllProjectCards();
             }
         });
-        
-        // Enhanced hover effects
+
+        // Optimized hover effects
+        let hoverTimeout;
         card.addEventListener('mouseenter', () => {
-            enhanceHoverEffects(card);
+            clearTimeout(hoverTimeout);
+            card.style.transition = 'box-shadow 0.3s ease, transform 0.3s ease';
+            card.style.boxShadow = '0 20px 40px rgba(50,184,198,0.3)';
         });
-        
+
         card.addEventListener('mouseleave', () => {
-            resetHoverEffects(card);
-        });
-        
-        // Mouse tracking for magnetic effect
-        card.addEventListener('mousemove', (e) => {
-            trackMousePosition(card, e);
+            hoverTimeout = setTimeout(() => {
+                card.style.boxShadow = '';
+            }, 100);
         });
     });
-    
-    // Close cards when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.project-card') && !e.target.closest('.project-backdrop')) {
-            closeAllProjectCards();
-        }
+
+    // Optimized resize handler
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            update3DScrollAnimation();
+        }, 150);
     });
-    
-    // Close cards on escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeAllProjectCards();
-        }
-    });
-    
-    // Intersection Observer for entrance animations
+
+    // Intersection Observer for better performance
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
-                triggerCardAnimations(entry.target);
             }
         });
-    }, { threshold: 0.3 });
-    
+    }, { 
+        threshold: 0.1, 
+        rootMargin: '50px 0px' 
+    });
+
     projectCards.forEach(card => observer.observe(card));
-    
-    // Resize handler for responsive adjustments
-    window.addEventListener('resize', () => {
+
+    // Initial setup
+    requestAnimationFrame(() => {
         update3DScrollAnimation();
     });
+
+    // Cleanup function for memory management
+    return () => {
+        if (animationFrame) {
+            cancelAnimationFrame(animationFrame);
+        }
+        observer.disconnect();
+        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener('resize', () => update3DScrollAnimation());
+    };
 }
 
 // ===== PROJECT CARD INTERACTION FUNCTIONS =====
